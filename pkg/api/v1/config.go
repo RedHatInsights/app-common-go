@@ -1,5 +1,12 @@
 package v1
 
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
+)
+
 type LoggingConfig struct {
 	Type       string           `json:"type"`
 	CloudWatch CloudWatchConfig `json:"cloudwatch,omitempty"`
@@ -45,6 +52,27 @@ type AppConfig struct {
 }
 
 type Option func(*AppConfig)
+
+var LoadedConfig *AppConfig
+
+func loadConfig(filename string) *AppConfig {
+	var appConfig AppConfig
+	jsonFile, err := os.Open(filename)
+	if err != nil {
+		fmt.Println(err)
+	}
+	data, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		fmt.Println(err)
+	}
+	json.Unmarshal(data, &appConfig)
+	defer jsonFile.Close()
+	return &appConfig
+}
+
+func init() {
+	LoadedConfig = loadConfig("/cdapp/cdappconfig.json")
+}
 
 func Logging(logging LoggingConfig) Option {
 	return func(c *AppConfig) {
