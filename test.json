@@ -31,5 +31,9 @@
         "pass": "password",
         "hostname": "hostname",
         "port": 5432
+    },
+    "objectStore": {
+        "accessKey": "Testing",
+        "secretKey": "Testing"
     }
 }
