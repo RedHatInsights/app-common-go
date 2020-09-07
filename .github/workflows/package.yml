@@ -1,0 +1,19 @@
+---
+name: Run Unit Tests
+
+'on':
+  - pull_request
+  - push
+
+jobs:
+
+  testing:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v1
+      - name: Install package and dependencies
+        run: |
+          sudo apt-get install golang-1.13
+      - name: Run Tests
+        run: ACG_CONFIG="../../../test.json" go test -v ./pkg/api/v1/...
