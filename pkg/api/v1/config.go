@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -63,15 +64,18 @@ func loadConfig(filename string) *AppConfig {
 	}
 	data, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
-	json.Unmarshal(data, &appConfig)
+	err = json.Unmarshal(data, &appConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer jsonFile.Close()
 	return &appConfig
 }
 
 func init() {
-	LoadedConfig = loadConfig("/cdapp/cdappconfig.json")
+	LoadedConfig = loadConfig(os.Getenv("ACG_CONFIG"))
 }
 
 func Logging(logging LoggingConfig) Option {
