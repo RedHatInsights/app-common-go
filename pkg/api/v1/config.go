@@ -52,7 +52,7 @@ type AppConfig struct {
 	Database    DatabaseConfig `json:"database"`
 }
 
-type Option func(*AppConfig)
+type ConfigOption func(*AppConfig)
 
 var LoadedConfig *AppConfig
 
@@ -78,38 +78,38 @@ func init() {
 	LoadedConfig = loadConfig(os.Getenv("ACG_CONFIG"))
 }
 
-func Logging(logging LoggingConfig) Option {
+func Logging(logging LoggingConfig) ConfigOption {
 	return func(c *AppConfig) {
 		c.Logging = logging
 	}
 }
 
-func Kafka(kc KafkaConfig) Option {
+func Kafka(kc KafkaConfig) ConfigOption {
 	return func(c *AppConfig) {
 		c.Kafka = kc
 	}
 }
 
-func Database(dc DatabaseConfig) Option {
+func Database(dc DatabaseConfig) ConfigOption {
 	return func(c *AppConfig) {
 		c.Database = dc
 	}
 }
 
-func Web(port int32) Option {
+func Web(port int32) ConfigOption {
 	return func(c *AppConfig) {
 		c.WebPort = port
 	}
 }
 
-func Metrics(path string, port int32) Option {
+func Metrics(path string, port int32) ConfigOption {
 	return func(c *AppConfig) {
 		c.MetricsPath = path
 		c.MetricsPort = port
 	}
 }
 
-func New(opts ...Option) *AppConfig {
+func New(opts ...ConfigOption) *AppConfig {
 	c := &AppConfig{
 		WebPort:     int32(8080),
 		MetricsPort: int32(9090),
