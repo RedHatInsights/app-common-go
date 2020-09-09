@@ -30,7 +30,8 @@
         "username": "username",
         "password": "password",
         "hostname": "hostname",
-        "port": 5432
+        "port": 5432,
+        "pgPass": "pgPass"
     },
     "objectStore": {
         "accessKey": "Testing",
