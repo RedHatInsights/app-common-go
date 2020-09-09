@@ -27,8 +27,8 @@
     },
     "database": {
         "name": "dBaseName",
-        "user": "username",
-        "pass": "password",
+        "username": "username",
+        "password": "password",
         "hostname": "hostname",
         "port": 5432
     },
