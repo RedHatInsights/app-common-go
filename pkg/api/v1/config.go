@@ -14,7 +14,7 @@ type LoggingConfig struct {
 }
 
 type CloudWatchConfig struct {
-	AccessKeyID     string `json:"accessKeyID"`
+	AccessKeyId     string `json:"accessKeyId"`
 	SecretAccessKey string `json:"secretAccessKey"`
 	Region          string `json:"region"`
 	LogGroup        string `json:"logGroup"`
@@ -47,6 +47,7 @@ type DatabaseConfig struct {
 	Password string `json:"password"`
 	Hostname string `json:"hostname"`
 	Port     int32  `json:"port"`
+	PgPass   string `json:"pgPass"`
 }
 
 type AppConfig struct {
