@@ -11,6 +11,7 @@ import (
 type ConfigOption func(*AppConfig)
 
 var LoadedConfig *AppConfig
+var KafkaTopics map[string]TopicConfig
 
 func loadConfig(filename string) *AppConfig {
 	var appConfig AppConfig
@@ -32,4 +33,10 @@ func loadConfig(filename string) *AppConfig {
 
 func init() {
 	LoadedConfig = loadConfig(os.Getenv("ACG_CONFIG"))
+	KafkaTopics = make(map[string]TopicConfig)
+	if LoadedConfig.Kafka != nil {
+		for _, topic := range LoadedConfig.Kafka.Topics {
+			KafkaTopics[topic.RequestedName] = topic
+		}
+	}
 }
