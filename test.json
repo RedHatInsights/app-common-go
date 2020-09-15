@@ -5,7 +5,7 @@
     "logging": {
         "type": "cloudwatch",
         "cloudwatch": {
-            "accessKeyID": "ACCESS_KEY",
+            "accessKeyId": "ACCESS_KEY",
             "secretAccessKey": "SECRET_ACCESS_KEY",
             "region": "EU",
             "logGroup": "base_app"
@@ -20,6 +20,7 @@
         ],
         "topics": [
             {
+                "requestedName": "originalName",
                 "name": "someTopic",
                 "consumerGroupName": "someGroupName"
             }
@@ -30,9 +31,11 @@
         "username": "username",
         "password": "password",
         "hostname": "hostname",
-        "port": 5432
+        "port": 5432,
+        "pgPass": "testing"
     },
     "objectStore": {
+        "endpoint": "endpoint:port",
         "accessKey": "Testing",
         "secretKey": "Testing"
     }

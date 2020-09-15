@@ -1,0 +1,252 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/AppConfig",
+    "definitions": {
+        "AppConfig": {
+            "type": "object",
+            "description": "application deployment configuration for cloud.redhat.com applications",
+            "properties": {
+                "webPort": {
+                    "type": "integer"
+                },
+                "metricsPort": {
+                    "type": "integer"
+                },
+                "metricsPath": {
+                    "type": "string"
+                },
+                "logging": {
+                    "$ref": "#/definitions/LoggingConfig"
+                },
+                "kafka": {
+                    "$ref": "#/definitions/KafkaConfig"
+                },
+                "database": {
+                    "$ref": "#/definitions/DatabaseConfig"
+                },
+                "objectStore": {
+                    "$ref": "#/definitions/ObjectStoreConfig"
+                },
+                "inMemoryDb": {
+                    "$ref": "#/definitions/InMemoryDB"
+                },
+                "dependencies": {
+                    "$ref": "#/definitions/DependenciesConfig"
+                }
+            },
+            "required": [
+                "webPort",
+                "metricsPort",
+                "metricsPath",
+                "logging"
+            ]
+        },
+        "LoggingConfig": {
+            "title": "LoggingConfig",
+            "type": "object",
+            "description": "Logging Configuration",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "cloudwatch": {
+                    "$ref": "#/definitions/CloudWatchConfig"
+                }
+            },
+            "required": [
+                "type"
+            ]
+        },
+        "CloudWatchConfig": {
+            "title": "CloudWatchConfig",
+            "type": "object",
+            "description": "Cloud Watch configuration",
+            "properties": {
+                "accessKeyId": {
+                    "type": "string"
+                },
+                "secretAccessKey": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "logGroup": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "accessKeyId",
+                "secretAccessKey",
+                "region",
+                "logGroup"
+            ]
+        },
+        "KafkaConfig": {
+            "title": "KafkaConfig",
+            "type": "object",
+            "description": "kafka configuration",
+            "properties": {
+                "brokers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BrokerConfig"
+                    }
+                },
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/TopicConfig"
+                    }
+                }
+            },
+            "required": [
+                "brokers",
+                "topics"
+            ]
+        },
+        "BrokerConfig": {
+            "id": "brokerConfig",
+            "type": "object",
+            "description": "broker configuration",
+            "properties": {
+                "hostname": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "hostname"
+            ]
+        },
+        "TopicConfig": {
+            "id": "topicConfig",
+            "type": "object",
+            "description": "topic configuration",
+            "properties": {
+                "requestedName": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "consumerGroup": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "requestedName"
+            ]
+        },
+        "DatabaseConfig": {
+            "id": "database",
+            "title": "DatabaseConfig",
+            "type": "object",
+            "description": "database configuration",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "hostname": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "pgPass": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "username",
+                "password",
+                "hostname",
+                "port",
+                "pgPass"
+            ]
+        },
+        "ObjectStoreConfig": {
+            "id": "objectStoreConfig",
+            "type": "object",
+            "description": "object storage configuration",
+            "properties": {
+                "accessKey": {
+                    "type": "string"
+                },
+                "secretKey": {
+                    "type": "string"
+                },
+                "endpoint": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "accessKey",
+                "secretKey",
+                "endpoint"
+            ]
+        },
+        "InMemoryDB": {
+            "id": "inMemoryDb",
+            "type": "object",
+            "description": "In Memory DB configuration",
+            "properties": {
+                "hostname": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "hostname",
+                "port"
+            ]
+        },
+        "DependenciesConfig": {
+            "id": "dependencies",
+            "type": "array",
+            "description": "Dependent service connection info",
+            "items": {
+                "$ref": "#/definitions/DependencyConfig"
+            }
+        },
+        "DependencyConfig": {
+            "id": "dependency",
+            "type": "object",
+            "description": "Dependent service connection info",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "hostname": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "name",
+                "hostname",
+                "port"
+            ]
+        }
+    }
+}
