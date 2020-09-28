@@ -35,8 +35,23 @@
         "pgPass": "testing"
     },
     "objectStore": {
-        "endpoint": "endpoint:port",
+        "hostname": "endpoint",
+        "port" : 9292,
         "accessKey": "Testing",
         "secretKey": "Testing"
-    }
+    },
+    "endpoints": [
+        {
+            "name": "endpoint1",
+            "app": "app1",
+            "hostname": "endpoint1.svc",
+            "port": 8000
+        },
+        {
+            "name": "endpoint2",
+            "app": "app2",
+            "hostname": "endpoint2.svc",
+            "port": 8000
+        }
+    ]
 }

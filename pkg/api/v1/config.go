@@ -12,6 +12,7 @@ type ConfigOption func(*AppConfig)
 
 var LoadedConfig *AppConfig
 var KafkaTopics map[string]TopicConfig
+var DependencyEndpoints map[string]map[string]DependencyEndpoint
 
 func loadConfig(filename string) *AppConfig {
 	var appConfig AppConfig
@@ -37,6 +38,15 @@ func init() {
 	if LoadedConfig.Kafka != nil {
 		for _, topic := range LoadedConfig.Kafka.Topics {
 			KafkaTopics[topic.RequestedName] = topic
+		}
+	}
+	DependencyEndpoints = make(map[string]map[string]DependencyEndpoint)
+	if LoadedConfig.Endpoints != nil {
+		for _, endpoint := range LoadedConfig.Endpoints {
+			if DependencyEndpoints[endpoint.App] == nil {
+				DependencyEndpoints[endpoint.App] = make(map[string]DependencyEndpoint)
+			}
+			DependencyEndpoints[endpoint.App][endpoint.Name] = endpoint
 		}
 	}
 }
