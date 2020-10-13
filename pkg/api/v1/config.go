@@ -13,6 +13,7 @@ type ConfigOption func(*AppConfig)
 var LoadedConfig *AppConfig
 var KafkaTopics map[string]TopicConfig
 var DependencyEndpoints map[string]map[string]DependencyEndpoint
+var ObjectBuckets map[string]ObjectStoreBucket
 
 func loadConfig(filename string) *AppConfig {
 	var appConfig AppConfig
@@ -47,6 +48,12 @@ func init() {
 				DependencyEndpoints[endpoint.App] = make(map[string]DependencyEndpoint)
 			}
 			DependencyEndpoints[endpoint.App][endpoint.Name] = endpoint
+		}
+	}
+	ObjectBuckets = make(map[string]ObjectStoreBucket)
+	if LoadedConfig.ObjectStore != nil {
+		for _, bucket := range LoadedConfig.ObjectStore.Buckets {
+			ObjectBuckets[bucket.RequestedName] = bucket
 		}
 	}
 }

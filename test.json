@@ -32,13 +32,23 @@
         "password": "password",
         "hostname": "hostname",
         "port": 5432,
-        "pgPass": "testing"
+        "pgPass": "testing",
+        "adminUsername": "adminusername",
+        "adminPassword": "adminpassword"
     },
     "objectStore": {
         "hostname": "endpoint",
         "port" : 9292,
         "accessKey": "Testing",
-        "secretKey": "Testing"
+        "secretKey": "Testing",
+        "buckets": [
+            {
+                "accessKey": "accessKey1",
+                "secretKey": "secretKey1",
+                "requestedName": "reqname",
+                "name": "name"
+            }
+        ]
     },
     "endpoints": [
         {

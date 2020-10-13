@@ -166,7 +166,10 @@
                 "port": {
                     "type": "integer"
                 },
-                "pgPass": {
+                "adminUsername": {
+                    "type": "string"
+                },
+                "adminPassword": {
                     "type": "string"
                 }
             },
@@ -176,7 +179,31 @@
                 "password",
                 "hostname",
                 "port",
-                "pgPass"
+                "adminUsername",
+                "adminPassword"
+            ]
+        },
+        "ObjectStoreBucket": {
+            "id": "objectStoreBucket",
+            "type": "object",
+            "description": "object storage bucket",
+            "properties": {
+                "accessKey": {
+                    "type": "string"
+                },
+                "secretKey": {
+                    "type": "string"
+                },
+                "requestedName": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "requestedName"
             ]
         },
         "ObjectStoreConfig": {
@@ -184,6 +211,12 @@
             "type": "object",
             "description": "object storage configuration",
             "properties": {
+                "buckets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ObjectStoreBucket"
+                    }
+                },
                 "accessKey": {
                     "type": "string"
                 },
@@ -198,8 +231,6 @@
                 }
             },
             "required": [
-                "accessKey",
-                "secretKey",
                 "hostname",
                 "port"
             ]

@@ -16,4 +16,11 @@ func TestClientLoad(t *testing.T) {
 	if val.Name != "someTopic" {
 		log.Fatal("Wrong topic name")
 	}
+	bucket, ok := ObjectBuckets["reqname"]
+	if !ok {
+		log.Fatal("Object bucket not found")
+	}
+	if bucket.Name != "name" {
+		log.Fatal("Wrong bucket name")
+	}
 }
