@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
@@ -15,26 +14,31 @@ var KafkaTopics map[string]TopicConfig
 var DependencyEndpoints map[string]map[string]DependencyEndpoint
 var ObjectBuckets map[string]ObjectStoreBucket
 
-func loadConfig(filename string) *AppConfig {
+func loadConfig(filename string) (*AppConfig, error) {
 	var appConfig AppConfig
 	jsonFile, err := os.Open(filename)
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 	data, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	err = json.Unmarshal(data, &appConfig)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer jsonFile.Close()
-	return &appConfig
+	return &appConfig, nil
 }
 
 func init() {
-	LoadedConfig = loadConfig(os.Getenv("ACG_CONFIG"))
+	loadedConfig, err := loadConfig(os.Getenv("ACG_CONFIG"))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	LoadedConfig = loadedConfig
 	KafkaTopics = make(map[string]TopicConfig)
 	if LoadedConfig.Kafka != nil {
 		for _, topic := range LoadedConfig.Kafka.Topics {
