@@ -1,7 +1,7 @@
 app-common-go
 =============
 
-Simple client access library for the config for the Whippoorwill operator.
+Simple client access library for the config for the Clowder operator.
 
 Testing
 -------
