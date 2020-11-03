@@ -41,6 +41,7 @@
         "port" : 9292,
         "accessKey": "Testing",
         "secretKey": "Testing",
+        "tls": false,
         "buckets": [
             {
                 "accessKey": "accessKey1",

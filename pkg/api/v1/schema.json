@@ -171,6 +171,9 @@
                 },
                 "adminPassword": {
                     "type": "string"
+                },
+                "rdsCa": {
+                    "type": "string"
                 }
             },
             "required": [
@@ -228,11 +231,15 @@
                 },
                 "port": {
                     "type": "integer"
+                },
+                "tls": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "hostname",
-                "port"
+                "port",
+                "tls"
             ]
         },
         "InMemoryDBConfig": {
