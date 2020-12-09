@@ -13,6 +13,7 @@ var LoadedConfig *AppConfig
 var KafkaTopics map[string]TopicConfig
 var DependencyEndpoints map[string]map[string]DependencyEndpoint
 var ObjectBuckets map[string]ObjectStoreBucket
+var KafkaServers []string
 
 func loadConfig(filename string) (*AppConfig, error) {
 	var appConfig AppConfig
@@ -58,6 +59,11 @@ func init() {
 	if LoadedConfig.ObjectStore != nil {
 		for _, bucket := range LoadedConfig.ObjectStore.Buckets {
 			ObjectBuckets[bucket.RequestedName] = bucket
+		}
+	}
+	if LoadedConfig.Kafka != nil {
+		for _, broker := range LoadedConfig.Kafka.Brokers {
+			KafkaServers = append(KafkaServers, fmt.Sprintf("%s:%d", broker.Hostname, *broker.Port))
 		}
 	}
 }

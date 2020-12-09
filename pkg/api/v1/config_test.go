@@ -29,4 +29,7 @@ func TestClientLoad(t *testing.T) {
 	if bucket.Name != "name" {
 		log.Fatal("Wrong bucket name")
 	}
+	if KafkaServers[0] != "broker-host:27015" {
+		log.Fatal("Wrong broker host")
+	}
 }
