@@ -34,7 +34,8 @@
         "port": 5432,
         "pgPass": "testing",
         "adminUsername": "adminusername",
-        "adminPassword": "adminpassword"
+        "adminPassword": "adminpassword",
+        "rdsCa": "ca"
     },
     "objectStore": {
         "hostname": "endpoint",
@@ -50,6 +51,10 @@
                 "name": "name"
             }
         ]
+    },
+    "featureFlags": {
+        "hostname": "ff-server.server.example.com",
+        "port": 4242
     },
     "endpoints": [
         {

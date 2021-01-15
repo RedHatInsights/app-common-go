@@ -35,4 +35,7 @@ func TestClientLoad(t *testing.T) {
 	if IsClowderEnabled() == false {
 		log.Fatal("Should be true if env var ACG_CONFIG is present")
 	}
+	if LoadedConfig.FeatureFlags.Hostname != "ff-server.server.example.com" {
+		log.Fatal("Wrong feature flag hostname")
+	}
 }
