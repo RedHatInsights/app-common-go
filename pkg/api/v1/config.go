@@ -33,6 +33,11 @@ func loadConfig(filename string) (*AppConfig, error) {
 	return &appConfig, nil
 }
 
+func IsClowderEnabled() bool {
+	_, ok := os.LookupEnv("ACG_CONFIG")
+	return ok
+}
+
 func init() {
 	loadedConfig, err := loadConfig(os.Getenv("ACG_CONFIG"))
 	if err != nil {

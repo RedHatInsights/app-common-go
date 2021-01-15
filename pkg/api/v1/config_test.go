@@ -32,4 +32,7 @@ func TestClientLoad(t *testing.T) {
 	if KafkaServers[0] != "broker-host:27015" {
 		log.Fatal("Wrong broker host")
 	}
+	if IsClowderEnabled() == false {
+		log.Fatal("Should be true if env var ACG_CONFIG is present")
+	}
 }
