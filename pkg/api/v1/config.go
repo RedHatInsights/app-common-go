@@ -12,6 +12,7 @@ type ConfigOption func(*AppConfig)
 var LoadedConfig *AppConfig
 var KafkaTopics map[string]TopicConfig
 var DependencyEndpoints map[string]map[string]DependencyEndpoint
+var PrivateDependencyEndpoints map[string]map[string]PrivateDependencyEndpoint
 var ObjectBuckets map[string]ObjectStoreBucket
 var KafkaServers []string
 
@@ -60,6 +61,17 @@ func init() {
 			DependencyEndpoints[endpoint.App][endpoint.Name] = endpoint
 		}
 	}
+
+	PrivateDependencyEndpoints = make(map[string]map[string]PrivateDependencyEndpoint)
+	if LoadedConfig.PrivateEndpoints != nil {
+		for _, endpoint := range LoadedConfig.PrivateEndpoints {
+			if PrivateDependencyEndpoints[endpoint.App] == nil {
+				PrivateDependencyEndpoints[endpoint.App] = make(map[string]PrivateDependencyEndpoint)
+			}
+			PrivateDependencyEndpoints[endpoint.App][endpoint.Name] = endpoint
+		}
+	}
+
 	ObjectBuckets = make(map[string]ObjectStoreBucket)
 	if LoadedConfig.ObjectStore != nil {
 		for _, bucket := range LoadedConfig.ObjectStore.Buckets {
