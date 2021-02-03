@@ -84,3 +84,26 @@ func init() {
 		}
 	}
 }
+
+// RdsCa writes the RDS CA from the JSON config to a temporary file and returns
+// the path
+func (a AppConfig) RdsCa() (string, error) {
+	dir, err := ioutil.TempDir("", "rdsca")
+	if err != nil {
+		return "", err
+	}
+
+	content := []byte(*a.Database.RdsCa)
+
+	fil, err := ioutil.TempFile(dir, "rds")
+
+	if err != nil {
+		return "", err
+	}
+
+	if err := ioutil.WriteFile(fil.Name(), content, 0666); err != nil {
+		return "", err
+	}
+
+	return fil.Name(), nil
+}

@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"io/ioutil"
 	"log"
 	"testing"
 )
@@ -49,5 +50,20 @@ func TestClientLoad(t *testing.T) {
 	}
 	if PrivateDependencyEndpoints["app2"]["endpoint2"].Name != "endpoint2" {
 		log.Fatal("endpoint had wrong name")
+	}
+
+	rdsFilename, err := LoadedConfig.RdsCa()
+
+	if err != nil {
+		log.Fatal("error in creating RDSCa file")
+	}
+
+	content, err := ioutil.ReadFile(rdsFilename)
+	if err != nil {
+		log.Fatal("error reading ca")
+	}
+
+	if string(content) != *LoadedConfig.Database.RdsCa {
+		log.Fatal("ca didn't match")
 	}
 }
