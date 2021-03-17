@@ -56,6 +56,9 @@ func (j *DatabaseConfig) UnmarshalJSON(b []byte) error {
 	if v, ok := raw["port"]; !ok || v == nil {
 		return fmt.Errorf("field port: required")
 	}
+	if v, ok := raw["sslMode"]; !ok || v == nil {
+		return fmt.Errorf("field sslMode: required")
+	}
 	if v, ok := raw["username"]; !ok || v == nil {
 		return fmt.Errorf("field username: required")
 	}
@@ -380,6 +383,9 @@ type DatabaseConfig struct {
 	// Defines the CA used to access the database.
 	RdsCa *string `json:"rdsCa,omitempty"`
 
+	// Defines the postgres SSL mode that should be used.
+	SslMode string `json:"sslMode"`
+
 	// Defines a username with standard access to the database.
 	Username string `json:"username"`
 }
@@ -448,6 +454,9 @@ type ObjectStoreBucket struct {
 
 	// The actual name of the bucket being accessed.
 	Name string `json:"name"`
+
+	// Defines the region for the specified bucket.
+	Region *string `json:"region,omitempty"`
 
 	// The name that was requested for the bucket in the ClowdApp.
 	RequestedName string `json:"requestedName"`
