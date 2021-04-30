@@ -139,6 +139,19 @@
                 "topics"
             ]
         },
+        "KafkaSASLConfig":{
+            "id": "kafkaSASLConfig",
+            "type": "object",
+            "description": "SASL Configuration for Kafka",
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "BrokerConfig": {
             "id": "brokerConfig",
             "type": "object",
@@ -149,6 +162,16 @@
                 },
                 "port": {
                     "type": "integer"
+                },
+                "cacert": {
+                    "type": "string"
+                },
+                "authtype": {
+                    "type": "string",
+                    "enum": ["mtls", "sasl"]
+                },
+                "sasl": {
+                    "$ref": "#/definitions/KafkaSASLConfig"
                 }
             },
             "required": [
@@ -166,10 +189,6 @@
                 },
                 "name": {
                     "description": "The name of the actual topic on the Kafka server.",
-                    "type": "string"
-                },
-                "consumerGroup": {
-                    "description": "Defines the consumer group that should be used for the topic.",
                     "type": "string"
                 }
             },
