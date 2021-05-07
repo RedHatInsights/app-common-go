@@ -22,6 +22,7 @@ func loadConfig(filename string) (*AppConfig, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer jsonFile.Close()
 	data, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
 		return nil, err
@@ -30,7 +31,6 @@ func loadConfig(filename string) (*AppConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer jsonFile.Close()
 	return &appConfig, nil
 }
 
