@@ -21,8 +21,7 @@
         "topics": [
             {
                 "requestedName": "originalName",
-                "name": "someTopic",
-                "consumerGroupName": "someGroupName"
+                "name": "someTopic"
             }
         ]
     },
