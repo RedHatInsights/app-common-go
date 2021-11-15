@@ -21,8 +21,7 @@
         "topics": [
             {
                 "requestedName": "originalName",
-                "name": "someTopic",
-                "consumerGroupName": "someGroupName"
+                "name": "someTopic"
             }
         ]
     },
@@ -55,7 +54,8 @@
     },
     "featureFlags": {
         "hostname": "ff-server.server.example.com",
-        "port": 4242
+        "port": 4242,
+        "scheme": "http"
     },
     "endpoints": [
         {
