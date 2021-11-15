@@ -39,6 +39,9 @@ func TestClientLoad(t *testing.T) {
 	if LoadedConfig.FeatureFlags.Hostname != "ff-server.server.example.com" {
 		log.Fatal("Wrong feature flag hostname")
 	}
+	if LoadedConfig.FeatureFlags.Scheme != "http" {
+		log.Fatal("Wrong feature flag scheme")
+	}
 	if DependencyEndpoints["app1"]["endpoint1"].Port != 8000 {
 		log.Fatal("endpoint had wrong port")
 	}
