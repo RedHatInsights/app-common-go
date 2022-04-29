@@ -1,0 +1,27 @@
+{
+    "BOPURL": "bopurl",
+    "database": {
+        "adminPassword": "pass",
+        "adminUsername": "user",
+        "hostname": "dbhost",
+        "name": "dbname",
+        "password": "dbpass",
+        "port": 5432,
+        "sslMode": "disable",
+        "username": "dbuser"
+    },
+    "logging": {
+        "cloudwatch": {
+            "accessKeyId": "",
+            "logGroup": "",
+            "region": "",
+            "secretAccessKey": ""
+        },
+        "type": "null"
+    },
+    "metricsPath": "/metrics",
+    "metricsPort": 9000,
+    "privatePort": 10000,
+    "publicPort": 8000,
+    "webPort": 8000
+}
