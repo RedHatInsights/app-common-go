@@ -10,6 +10,7 @@ func TestClientLoad(t *testing.T) {
 	if LoadedConfig == nil {
 		log.Fatal("Config didn't load in init()")
 	}
+
 	if len(LoadedConfig.Kafka.Brokers) < 1 {
 		log.Fatal("Kafka brokers not loaded")
 	}
@@ -69,4 +70,18 @@ func TestClientLoad(t *testing.T) {
 	if string(content) != *LoadedConfig.Database.RdsCa {
 		log.Fatal("ca didn't match")
 	}
+}
+
+func TestEmptyRDSCa(t *testing.T) {
+	cfg, err := loadConfig("../../../tests/nordsca.json")
+	if err != nil {
+		log.Fatalf("can't load config: %s", err)
+	}
+
+	_, err = cfg.RdsCa()
+
+	if err == nil {
+		log.Fatal("error should have been created")
+	}
+
 }

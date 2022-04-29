@@ -108,6 +108,10 @@ func writeContent(dir string, file string, contentString *string) (string, error
 		return "", err
 	}
 
+	if contentString == nil {
+		return "", fmt.Errorf("No RDS available")
+	}
+
 	content := []byte(*contentString)
 
 	fil, err := ioutil.TempFile(dir, file)
