@@ -68,6 +68,9 @@ func (j *DatabaseConfig) UnmarshalJSON(b []byte) error {
 
 // ClowdApp deployment configuration for Clowder enabled apps.
 type AppConfig struct {
+	// Defines the path to the BOPURL.
+	BOPURL *string `json:"BOPURL,omitempty"`
+
 	// Database corresponds to the JSON schema field "database".
 	Database *DatabaseConfig `json:"database,omitempty"`
 
@@ -238,6 +241,12 @@ func (j *ObjectStoreBucket) UnmarshalJSON(b []byte) error {
 type AppMetadata struct {
 	// Metadata pertaining to an application's deployments
 	Deployments []DeploymentMetadata `json:"deployments,omitempty"`
+
+	// Name of the ClowdEnvironment this ClowdApp runs in
+	EnvName *string `json:"envName,omitempty"`
+
+	// Name of the ClowdApp
+	Name *string `json:"name,omitempty"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -550,6 +559,12 @@ type KafkaConfig struct {
 type KafkaSASLConfig struct {
 	// Password corresponds to the JSON schema field "password".
 	Password *string `json:"password,omitempty"`
+
+	// SaslMechanism corresponds to the JSON schema field "saslMechanism".
+	SaslMechanism *string `json:"saslMechanism,omitempty"`
+
+	// SecurityProtocol corresponds to the JSON schema field "securityProtocol".
+	SecurityProtocol *string `json:"securityProtocol,omitempty"`
 
 	// Username corresponds to the JSON schema field "username".
 	Username *string `json:"username,omitempty"`

@@ -62,8 +62,11 @@
                     "items": {
                         "$ref": "#/definitions/PrivateDependencyEndpoint"
                     }
+                },
+                "BOPURL": {
+                    "description": "Defines the path to the BOPURL.",
+                    "type": "string"
                 }
-
             },
             "required": [
                 "metricsPort",
@@ -93,6 +96,14 @@
             "type": "object",
             "description": "Arbitrary metadata pertaining to the application application",
             "properties": {
+                "name": {
+                    "description": "Name of the ClowdApp",
+                    "type": "string"
+                },
+                "envName": {
+                    "description": "Name of the ClowdEnvironment this ClowdApp runs in",
+                    "type": "string"
+                },
                 "deployments": {
                     "description": "Metadata pertaining to an application's deployments",
                     "type": "array",
@@ -185,6 +196,12 @@
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "securityProtocol": {
+                    "type": "string"
+                },
+                "saslMechanism": {
                     "type": "string"
                 }
             },
