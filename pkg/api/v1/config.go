@@ -98,6 +98,10 @@ func (a AppConfig) RdsCa() (string, error) {
 // KafkaCa writes the Kafka CA from the JSON config to a temporary file and returns
 // the path
 func (a AppConfig) KafkaCa(broker BrokerConfig) (string, error) {
+	return KafkaCa(broker)
+}
+
+func KafkaCa(broker BrokerConfig) (string, error) {
 	return writeContent("kafkaca", "kafka", broker.Cacert)
 }
 
@@ -109,7 +113,7 @@ func writeContent(dir string, file string, contentString *string) (string, error
 	}
 
 	if contentString == nil {
-		return "", fmt.Errorf("No RDS available")
+		return "", fmt.Errorf("no RDS available")
 	}
 
 	content := []byte(*contentString)

@@ -1,0 +1,21 @@
+{
+    "brokers": [
+        {
+            "hostname": "broker-host",
+            "port": 27015,
+            "authtype": "sasl",
+            "cacrt": "caString",
+            "sasl": {
+                "password": "test",
+                "saslMechanism": "SCRAM-SHA-512",
+                "securityProtocol": "SASL_SSL",
+                "username": "testuser"
+            }
+        }
+    ],
+    "topics": [
+        {
+            "requestedName": "originalName",
+            "name": "someTopic"
+        }
+    ]}
