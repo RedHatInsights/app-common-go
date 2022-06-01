@@ -8,6 +8,7 @@ import (
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 )
 
+// Generates a Kafka producer with a default config.
 func NewDefaultKafkaProducer() (*kafka.Producer, error) {
 	cfg, err := kafkaGenerateConfig(LoadedConfig.Kafka)
 	if err != nil {
@@ -16,8 +17,22 @@ func NewDefaultKafkaProducer() (*kafka.Producer, error) {
 	return kafka.NewProducer(cfg)
 }
 
+// Generates a Kafka producer with a given config
 func NewKafkaProducer(cfg *kafka.ConfigMap) (*kafka.Producer, error) {
 	return kafka.NewProducer(cfg)
+}
+
+func NewDefaultKafkaConsumer(groupid string) (*kafka.Consumer, error) {
+	cfg, err := kafkaGenerateConfig(LoadedConfig.Kafka)
+	if err != nil {
+		return nil, err
+	}
+	(*cfg)["group.id"] = groupid
+	return kafka.NewConsumer(cfg)
+}
+
+func NewKafkaConsumer(cfg *kafka.ConfigMap) (*kafka.Consumer, error) {
+	return kafka.NewConsumer(cfg)
 }
 
 func setSASLKafkaConfig(cfgSource *KafkaConfig, cfgDest *kafka.ConfigMap) {
@@ -27,6 +42,8 @@ func setSASLKafkaConfig(cfgSource *KafkaConfig, cfgDest *kafka.ConfigMap) {
 	(*cfgDest)["sasl.password"] = *cfgSource.Brokers[0].Sasl.Password
 }
 
+// kafkaGenerateConfig generates a kafka.ConfigMap from a KafkaConfig struct
+// used in the creation of kafka.Producer and kafka.Consumer
 func kafkaGenerateConfig(cfg *KafkaConfig) (*kafka.ConfigMap, error) {
 	brokers := []string{}
 	for _, broker := range cfg.Brokers {
@@ -50,6 +67,7 @@ func kafkaGenerateConfig(cfg *KafkaConfig) (*kafka.ConfigMap, error) {
 	return basemap, nil
 }
 
+// setCAKafkaConfig sets the CA config for the kafka.ConfigMap
 func setCAKafkaConfig(cfgSource *KafkaConfig, cfgDest *kafka.ConfigMap) error {
 	filename, err := KafkaCa(cfgSource.Brokers[0])
 
