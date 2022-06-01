@@ -73,7 +73,7 @@ func TestClientLoad(t *testing.T) {
 }
 
 func TestEmptyRDSCa(t *testing.T) {
-	cfg, err := loadConfig("../../../tests/nordsca.json")
+	cfg, err := loadConfig("../../../testdata/nordsca.json")
 	if err != nil {
 		log.Fatalf("can't load config: %s", err)
 	}

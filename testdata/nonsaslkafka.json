@@ -1,0 +1,14 @@
+{
+    "brokers": [
+        {
+            "hostname": "broker-host",
+            "port": 27015,
+            "cacert": "caString"
+        }
+    ],
+    "topics": [
+        {
+            "requestedName": "originalName",
+            "name": "someTopic"
+        }
+    ]}
