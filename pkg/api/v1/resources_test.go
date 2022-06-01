@@ -112,3 +112,20 @@ func TestDefaultKafkaProducer(t *testing.T) {
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, kafka, "config should have data")
 }
+
+func TestKafkaConsumer(t *testing.T) {
+	kafkaConfig := configs["saslkafka.json"]
+	cfg, _ := kafkaGenerateConfig(kafkaConfig)
+	(*cfg)["group.id"] = "groupid"
+	kafka, err := NewKafkaConsumer(cfg)
+
+	assert.Nil(t, err, "error should be nil")
+	assert.NotNil(t, kafka, "config should have data")
+}
+
+func TestDefaultKafkaConsumer(t *testing.T) {
+	kafka, err := NewDefaultKafkaConsumer("groupid")
+
+	assert.Nil(t, err, "error should be nil")
+	assert.NotNil(t, kafka, "config should have data")
+}
