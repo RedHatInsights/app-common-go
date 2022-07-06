@@ -15,7 +15,8 @@
         "brokers": [
             {
                 "hostname": "broker-host",
-                "port": 27015
+                "port": 27015,
+                "cacert": "kafkaca"
             }
         ],
         "topics": [

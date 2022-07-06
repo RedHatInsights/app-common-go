@@ -97,8 +97,22 @@ func (a AppConfig) RdsCa() (string, error) {
 
 // KafkaCa writes the Kafka CA from the JSON config to a temporary file and returns
 // the path
-func (a AppConfig) KafkaCa(broker BrokerConfig) (string, error) {
-	return writeContent("kafkaca", "kafka", broker.Cacert)
+func (a AppConfig) KafkaCa(brokers ...BrokerConfig) (string, error) {
+	if len(brokers) == 0 {
+		if len(LoadedConfig.Kafka.Brokers) == 0 {
+			return "", fmt.Errorf("no broker availabl")
+		}
+		brokers = LoadedConfig.Kafka.Brokers
+	}
+	return writeContent("kafkaca", "kafka", brokers[0].Cacert)
+}
+
+func (a AppConfig) KafkaFirstCa() (string, error) {
+	if a.Kafka == nil || len(a.Kafka.Brokers) == 0 || a.Kafka.Brokers[0].Cacert == nil {
+		return "", fmt.Errorf("could not find ca for first broker")
+	}
+	file := a.Kafka.Brokers[0].Cacert
+	return writeContent("kafkaca", "kafka", file)
 }
 
 func writeContent(dir string, file string, contentString *string) (string, error) {
@@ -109,7 +123,7 @@ func writeContent(dir string, file string, contentString *string) (string, error
 	}
 
 	if contentString == nil {
-		return "", fmt.Errorf("No RDS available")
+		return "", fmt.Errorf("no RDS available")
 	}
 
 	content := []byte(*contentString)
