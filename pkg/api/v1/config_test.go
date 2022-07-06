@@ -4,72 +4,47 @@ import (
 	"io/ioutil"
 	"log"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestClientLoad(t *testing.T) {
-	if LoadedConfig == nil {
-		log.Fatal("Config didn't load in init()")
-	}
+	assert.NotNil(t, LoadedConfig, "Config didn't load in init()")
+	assert.Len(t, LoadedConfig.Kafka.Brokers, 1, "Kafka brokers not loaded")
+	assert.Equal(t, 27015, *(LoadedConfig.Kafka.Brokers[0].Port), "Kafka port was not loaded")
+	assert.Contains(t, KafkaTopics, "originalName", "Kafka Topic not found")
+	assert.Equal(t, "someTopic", KafkaTopics["originalName"].Name, "Wrong topic name")
+	assert.Contains(t, ObjectBuckets, "reqname", "ObjectBucket not found")
+	assert.Equal(t, "name", ObjectBuckets["reqname"].Name, "Wrong bucket name")
 
-	if len(LoadedConfig.Kafka.Brokers) < 1 {
-		log.Fatal("Kafka brokers not loaded")
-	}
-	if *(LoadedConfig.Kafka.Brokers[0].Port) != 27015 {
-		log.Fatal("Kafka port was not loaded")
-	}
-	val, ok := KafkaTopics["originalName"]
-	if !ok {
-		log.Fatal("Kafka Topic not found")
-	}
-	if val.Name != "someTopic" {
-		log.Fatal("Wrong topic name")
-	}
-	bucket, ok := ObjectBuckets["reqname"]
-	if !ok {
-		log.Fatal("Object bucket not found")
-	}
-	if bucket.Name != "name" {
-		log.Fatal("Wrong bucket name")
-	}
-	if KafkaServers[0] != "broker-host:27015" {
-		log.Fatal("Wrong broker host")
-	}
-	if IsClowderEnabled() == false {
-		log.Fatal("Should be true if env var ACG_CONFIG is present")
-	}
-	if LoadedConfig.FeatureFlags.Hostname != "ff-server.server.example.com" {
-		log.Fatal("Wrong feature flag hostname")
-	}
-	if LoadedConfig.FeatureFlags.Scheme != "http" {
-		log.Fatal("Wrong feature flag scheme")
-	}
-	if DependencyEndpoints["app1"]["endpoint1"].Port != 8000 {
-		log.Fatal("endpoint had wrong port")
-	}
-	if DependencyEndpoints["app2"]["endpoint2"].Name != "endpoint2" {
-		log.Fatal("endpoint had wrong name")
-	}
-	if PrivateDependencyEndpoints["app1"]["endpoint1"].Port != 10000 {
-		log.Fatal("endpoint had wrong port")
-	}
-	if PrivateDependencyEndpoints["app2"]["endpoint2"].Name != "endpoint2" {
-		log.Fatal("endpoint had wrong name")
-	}
+	assert.ElementsMatch(t, []string{"broker-host:27015"}, KafkaServers)
+	assert.True(t, IsClowderEnabled(), "Should be true if env var ACG_CONFIG is present")
+
+	assert.Equal(t, "ff-server.server.example.com", LoadedConfig.FeatureFlags.Hostname, "Wrong feature flag hostname")
+	assert.Equal(t, "http", string(LoadedConfig.FeatureFlags.Scheme), "Wrong feature flag scheme")
+
+	assert.Equal(t, 8000, DependencyEndpoints["app1"]["endpoint1"].Port, "endpoint had wrong port")
+	assert.Equal(t, "endpoint2", DependencyEndpoints["app2"]["endpoint2"].Name, "endpoint had wrong name")
+	assert.Equal(t, 10000, PrivateDependencyEndpoints["app1"]["endpoint1"].Port, "endpoint had wrong port")
+	assert.Equal(t, "endpoint2", PrivateDependencyEndpoints["app2"]["endpoint2"].Name, "endpoint had wrong name")
 
 	rdsFilename, err := LoadedConfig.RdsCa()
-
-	if err != nil {
-		log.Fatal("error in creating RDSCa file")
-	}
-
+	assert.Nil(t, err, "error in creating RDSCa file")
 	content, err := ioutil.ReadFile(rdsFilename)
-	if err != nil {
-		log.Fatal("error reading ca")
-	}
+	assert.Nil(t, err, "error reading ca")
+	assert.Equal(t, *LoadedConfig.Database.RdsCa, string(content), "rds ca didn't match")
 
-	if string(content) != *LoadedConfig.Database.RdsCa {
-		log.Fatal("ca didn't match")
-	}
+	kafkaFilename, err := LoadedConfig.KafkaCa(LoadedConfig.Kafka.Brokers[0])
+	assert.Nil(t, err, "error in creating KafkaCa file")
+	content, err = ioutil.ReadFile(kafkaFilename)
+	assert.Nil(t, err, "error reading ca")
+	assert.Equal(t, *LoadedConfig.Kafka.Brokers[0].Cacert, string(content), "kafka ca didn't match")
+
+	kafkaFilename, err = LoadedConfig.KafkaCa()
+	assert.Nil(t, err, "error in creating KafkaCa file")
+	content, err = ioutil.ReadFile(kafkaFilename)
+	assert.Nil(t, err, "error reading ca")
+	assert.Equal(t, *LoadedConfig.Kafka.Brokers[0].Cacert, string(content), "kafka ca didn't match")
 }
 
 func TestEmptyRDSCa(t *testing.T) {

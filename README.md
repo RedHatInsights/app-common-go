@@ -24,6 +24,8 @@ The ``clowder`` library also comes with several other helpers
 
 * ``clowder.LoadedConfig.RdsCa()`` - creates a temporary file with the RDSCa and 
   returns the filename.
+* ``clowder.LoadedConfig.KafkaCa(<BrokerConfig>)`` - creates a temporary file with the KafkaCa and 
+  returns the filename, if broker not givne, first is chosen.
 * ``clowder.KafkaTopics`` - returns a map of KafkaTopics using the requestedName
   as the key and the topic object as the value.
 * ``clowder.KafkaServers`` - returns a list of Kafka Broker URLs.
