@@ -23,6 +23,8 @@ func TestClientLoad(t *testing.T) {
 	assert.Equal(t, "ff-server.server.example.com", LoadedConfig.FeatureFlags.Hostname, "Wrong feature flag hostname")
 	assert.Equal(t, "http", string(LoadedConfig.FeatureFlags.Scheme), "Wrong feature flag scheme")
 
+	assert.Equal(t, "/foo/bar", LoadedConfig.TlsCAPath)
+
 	assert.Equal(t, 8000, DependencyEndpoints["app1"]["endpoint1"].Port, "endpoint had wrong port")
 	assert.Equal(t, "endpoint2", DependencyEndpoints["app2"]["endpoint2"].Name, "endpoint had wrong name")
 	assert.Equal(t, 10000, PrivateDependencyEndpoints["app1"]["endpoint1"].Port, "endpoint had wrong port")
