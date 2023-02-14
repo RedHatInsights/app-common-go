@@ -64,7 +64,8 @@
             "name": "endpoint1",
             "app": "app1",
             "hostname": "endpoint1.svc",
-            "port": 8000
+            "port": 8000,
+	    "tlsPort": 8800
         },
         {
             "name": "endpoint2",
@@ -78,7 +79,8 @@
             "name": "endpoint1",
             "app": "app1",
             "hostname": "endpoint1.svc",
-            "port": 10000
+            "port": 10000,
+	    "tlsPort": 11000
         },
         {
             "name": "endpoint2",

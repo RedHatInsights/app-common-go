@@ -26,8 +26,10 @@ func TestClientLoad(t *testing.T) {
 	assert.Equal(t, "/foo/bar", LoadedConfig.TlsCAPath)
 
 	assert.Equal(t, 8000, DependencyEndpoints["app1"]["endpoint1"].Port, "endpoint had wrong port")
+	assert.Equal(t, 8800, DependencyEndpoints["app1"]["endpoint1"].TlsPort)
 	assert.Equal(t, "endpoint2", DependencyEndpoints["app2"]["endpoint2"].Name, "endpoint had wrong name")
 	assert.Equal(t, 10000, PrivateDependencyEndpoints["app1"]["endpoint1"].Port, "endpoint had wrong port")
+	assert.Equal(t, 11000, PrivateDependencyEndpoints["app1"]["endpoint1"].TlsPort)
 	assert.Equal(t, "endpoint2", PrivateDependencyEndpoints["app2"]["endpoint2"].Name, "endpoint had wrong name")
 
 	rdsFilename, err := LoadedConfig.RdsCa()
