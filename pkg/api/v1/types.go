@@ -116,6 +116,9 @@ type AppConfig struct {
 
 	// Deprecated: Use 'publicPort' instead.
 	WebPort *int `json:"webPort,omitempty"`
+
+	// Defines the TLS CA MetricsPath
+	TlsCAPath string `json:"tlsCAPath,omitempty"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
