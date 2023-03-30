@@ -39,4 +39,4 @@ The ``clowder`` library also comes with several other helpers
 Testing
 -------
 
-`ACG_CONFIG="../../../test.json" go test -v ./pkg/api/v1/...`
+`ACG_CONFIG="../../../tests/test.json" go test -v ./pkg/api/v1/...`
