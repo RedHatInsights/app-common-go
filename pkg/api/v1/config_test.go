@@ -1,8 +1,8 @@
 package v1
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -23,7 +23,7 @@ func TestClientLoad(t *testing.T) {
 	assert.Equal(t, "ff-server.server.example.com", LoadedConfig.FeatureFlags.Hostname, "Wrong feature flag hostname")
 	assert.Equal(t, "http", string(LoadedConfig.FeatureFlags.Scheme), "Wrong feature flag scheme")
 
-	assert.Equal(t, "/foo/bar", LoadedConfig.TlsCAPath)
+	assert.Equal(t, "/foo/bar", *(LoadedConfig.TlsCAPath))
 
 	assert.Equal(t, 8000, DependencyEndpoints["app1"]["endpoint1"].Port, "endpoint had wrong port")
 	assert.Equal(t, "endpoint2", DependencyEndpoints["app2"]["endpoint2"].Name, "endpoint had wrong name")
@@ -32,19 +32,19 @@ func TestClientLoad(t *testing.T) {
 
 	rdsFilename, err := LoadedConfig.RdsCa()
 	assert.Nil(t, err, "error in creating RDSCa file")
-	content, err := ioutil.ReadFile(rdsFilename)
+	content, err := os.ReadFile(rdsFilename)
 	assert.Nil(t, err, "error reading ca")
 	assert.Equal(t, *LoadedConfig.Database.RdsCa, string(content), "rds ca didn't match")
 
 	kafkaFilename, err := LoadedConfig.KafkaCa(LoadedConfig.Kafka.Brokers[0])
 	assert.Nil(t, err, "error in creating KafkaCa file")
-	content, err = ioutil.ReadFile(kafkaFilename)
+	content, err = os.ReadFile(kafkaFilename)
 	assert.Nil(t, err, "error reading ca")
 	assert.Equal(t, *LoadedConfig.Kafka.Brokers[0].Cacert, string(content), "kafka ca didn't match")
 
 	kafkaFilename, err = LoadedConfig.KafkaCa()
 	assert.Nil(t, err, "error in creating KafkaCa file")
-	content, err = ioutil.ReadFile(kafkaFilename)
+	content, err = os.ReadFile(kafkaFilename)
 	assert.Nil(t, err, "error reading ca")
 	assert.Equal(t, *LoadedConfig.Kafka.Brokers[0].Cacert, string(content), "kafka ca didn't match")
 }
