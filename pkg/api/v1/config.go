@@ -16,7 +16,7 @@ var PrivateDependencyEndpoints map[string]map[string]PrivateDependencyEndpoint
 var ObjectBuckets map[string]ObjectStoreBucket
 var KafkaServers []string
 
-func loadConfig(filename string) (*AppConfig, error) {
+func LoadConfig(filename string) (*AppConfig, error) {
 	var appConfig AppConfig
 	jsonFile, err := os.Open(filename)
 	if err != nil {
@@ -43,7 +43,7 @@ func init() {
 	if !IsClowderEnabled() {
 		return
 	}
-	loadedConfig, err := loadConfig(os.Getenv("ACG_CONFIG"))
+	loadedConfig, err := LoadConfig(os.Getenv("ACG_CONFIG"))
 	if err != nil {
 		fmt.Println(err)
 		return

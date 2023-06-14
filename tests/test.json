@@ -1,4 +1,5 @@
 {
+    "apiPath": "api-path",
     "publicPort": 8000,
     "metricsPort": 9000,
     "metricsPath": "/metrics",

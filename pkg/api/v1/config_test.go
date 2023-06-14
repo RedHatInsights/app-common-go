@@ -10,6 +10,7 @@ import (
 
 func TestClientLoad(t *testing.T) {
 	assert.NotNil(t, LoadedConfig, "Config didn't load in init()")
+	assert.Equal(t, "api-path", LoadedConfig.ApiPath, "APIPath not loaded")
 	assert.Len(t, LoadedConfig.Kafka.Brokers, 1, "Kafka brokers not loaded")
 	assert.Equal(t, 27015, *(LoadedConfig.Kafka.Brokers[0].Port), "Kafka port was not loaded")
 	assert.Contains(t, KafkaTopics, "originalName", "Kafka Topic not found")
@@ -50,7 +51,7 @@ func TestClientLoad(t *testing.T) {
 }
 
 func TestEmptyRDSCa(t *testing.T) {
-	cfg, err := loadConfig("../../../tests/nordsca.json")
+	cfg, err := LoadConfig("../../../tests/nordsca.json")
 	if err != nil {
 		log.Fatalf("can't load config: %s", err)
 	}
