@@ -8,10 +8,6 @@
             "type": "object",
             "description": "ClowdApp deployment configuration for Clowder enabled apps.",
             "properties": {
-                "apiPath": {
-                    "description": "Defines the path used in the public web service",
-                    "type": "string"
-                },
                 "privatePort": {
                     "description": "Defines the private port that the app should be configured to listen on for API traffic.",
                     "type": "integer"
@@ -472,13 +468,17 @@
                 "tlsPort": {
                     "description": "The TLS port of the dependent service.",
                     "type": "integer"
+                },
+                "apiPath": {
+                    "description": "The top level api path that the app should serve from /api/<apiPath>"
                 }
             },
             "required": [
                 "name",
                 "hostname",
                 "port",
-                "app"
+                "app",
+                "apiPath"
             ]
         },
         "PrivateDependencyEndpoint": {
