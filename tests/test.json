@@ -65,13 +65,15 @@
             "name": "endpoint1",
             "app": "app1",
             "hostname": "endpoint1.svc",
-            "port": 8000
+            "port": 8000,
+            "apiPath": "app1-api-path"
         },
         {
             "name": "endpoint2",
             "app": "app2",
             "hostname": "endpoint2.svc",
-            "port": 8000
+            "port": 8000,
+            "apiPath": "app2-api-path"
         }
     ],
     "privateEndpoints": [

@@ -71,9 +71,6 @@ type AppConfig struct {
 	// Defines the path to the BOPURL.
 	BOPURL *string `json:"BOPURL,omitempty" yaml:"BOPURL,omitempty" mapstructure:"BOPURL,omitempty"`
 
-	// API Path
-	ApiPath *string `json:"apiPath,omitempty" yaml:"apiPath,omitempty" mapstructure:"apiPath,omitempty"`
-
 	// Database corresponds to the JSON schema field "database".
 	Database *DatabaseConfig `json:"database,omitempty" yaml:"database,omitempty" mapstructure:"database,omitempty"`
 

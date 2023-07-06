@@ -10,7 +10,6 @@ import (
 
 func TestClientLoad(t *testing.T) {
 	assert.NotNil(t, LoadedConfig, "Config didn't load in init()")
-	assert.Equal(t, "api-path", LoadedConfig.ApiPath, "APIPath not loaded")
 	assert.Len(t, LoadedConfig.Kafka.Brokers, 1, "Kafka brokers not loaded")
 	assert.Equal(t, 27015, *(LoadedConfig.Kafka.Brokers[0].Port), "Kafka port was not loaded")
 	assert.Contains(t, KafkaTopics, "originalName", "Kafka Topic not found")
@@ -25,6 +24,9 @@ func TestClientLoad(t *testing.T) {
 	assert.Equal(t, "http", string(LoadedConfig.FeatureFlags.Scheme), "Wrong feature flag scheme")
 
 	assert.Equal(t, "/foo/bar", *(LoadedConfig.TlsCAPath))
+
+	assert.Equal(t, "app1-api-path", DependencyEndpoints["app1"]["endpoint1"].ApiPath, "endpoint1 had wrong port")
+	assert.Equal(t, "app2-api-path", DependencyEndpoints["app2"]["endpoint2"].ApiPath, "endpoint2 had wrong port")
 
 	assert.Equal(t, 8000, DependencyEndpoints["app1"]["endpoint1"].Port, "endpoint had wrong port")
 	assert.Equal(t, "endpoint2", DependencyEndpoints["app2"]["endpoint2"].Name, "endpoint had wrong name")
