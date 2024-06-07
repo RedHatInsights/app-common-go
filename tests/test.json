@@ -1,5 +1,6 @@
 {
     "apiPath": "api-path",
+    "hostname": "testing",
     "publicPort": 8000,
     "metricsPort": 9000,
     "metricsPath": "/metrics",
