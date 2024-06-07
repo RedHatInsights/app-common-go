@@ -50,6 +50,8 @@ func TestClientLoad(t *testing.T) {
 	content, err = os.ReadFile(kafkaFilename)
 	assert.Nil(t, err, "error reading ca")
 	assert.Equal(t, *LoadedConfig.Kafka.Brokers[0].Cacert, string(content), "kafka ca didn't match")
+
+	assert.Equal(t, *LoadedConfig.Hostname, "testing", "top level hostname didn't match")
 }
 
 func TestEmptyRDSCa(t *testing.T) {
