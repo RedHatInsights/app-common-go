@@ -1,16 +1,27 @@
-app-common-go
-=============
+# app-common-go
 
-Simple client access library for the config for the Clowder operator.
+Simple client access library for the configuration of the [Clowder operator](https://github.com/RedHatInsights/clowder). This library provides a Go interface for applications running in Clowder-managed environments to access their runtime configuration.
 
-Usage
------
+## Installation
 
-To access configuration, see the following example
+Add this library to your Go project:
 
+```sh
+go get github.com/redhatinsights/app-common-go
 ```
+
+### Prerequisites
+
+- Go 1.18 or later
+- Applications must be deployed in a Clowder-managed environment to use runtime configuration features
+
+## Usage
+
+Import the library and check if Clowder is enabled before accessing configuration:
+
+```go
 import (
-        clowder "github.com/redhatinsights/app-common-go/pkg/api/v1"
+    clowder "github.com/redhatinsights/app-common-go/pkg/api/v1"
 )
 
 func main() {
@@ -20,23 +31,62 @@ func main() {
 }
 ```
 
-The ``clowder`` library also comes with several other helpers
+The library automatically loads configuration from the `ACG_CONFIG` environment variable when running in a Clowder environment.
 
-* ``clowder.LoadedConfig.RdsCa()`` - creates a temporary file with the RDSCa and 
-  returns the filename.
-* ``clowder.LoadedConfig.KafkaCa(<BrokerConfig>)`` - creates a temporary file with the KafkaCa and 
-  returns the filename, if broker not givne, first is chosen.
-* ``clowder.KafkaTopics`` - returns a map of KafkaTopics using the requestedName
-  as the key and the topic object as the value.
-* ``clowder.KafkaServers`` - returns a list of Kafka Broker URLs.
-* ``clowder.ObjectBuckets`` - returns a list of ObjectBuckets using the requestedName
-  as the key and the bucket object as the value.
-* ``clowder.DependencyEndpoints`` - returns a nested map using \[appName\]\[deploymentName\] 
-  for the public services of requested applications. 
-* ``clowder.PrivateDependencyEndpoints`` - returns a nested map using \[appName\]\[deploymentName\] 
-  for the private services of requested applications.
+## API Overview
 
-Testing
--------
+The library provides several helper functions and global variables for accessing common configuration elements:
 
-`ACG_CONFIG="../../../tests/test.json" go test -v ./pkg/api/v1/...`
+### Configuration Globals
+
+- `clowder.LoadedConfig` - The parsed application configuration
+- `clowder.KafkaTopics` - Map of Kafka topics keyed by requested name
+- `clowder.KafkaServers` - List of Kafka broker URLs
+- `clowder.ObjectBuckets` - Map of object storage buckets keyed by requested name
+- `clowder.DependencyEndpoints` - Nested map `[appName][deploymentName]` for public service endpoints
+- `clowder.PrivateDependencyEndpoints` - Nested map `[appName][deploymentName]` for private service endpoints
+
+### Helper Methods
+
+- `clowder.IsClowderEnabled()` - Returns true if the `ACG_CONFIG` environment variable is set
+- `clowder.LoadedConfig.RdsCa()` - Creates a temporary file with the RDS CA certificate and returns the filename
+- `clowder.LoadedConfig.KafkaCa(<BrokerConfig>)` - Creates a temporary file with the Kafka CA certificate and returns the filename (if broker not given, first is chosen)
+
+### Example: Accessing Kafka Configuration
+
+```go
+if clowder.IsClowderEnabled() {
+    // Access a specific topic
+    if topic, ok := clowder.KafkaTopics["my-topic"]; ok {
+        fmt.Printf("Topic name: %s\n", topic.Name)
+    }
+    
+    // Get all Kafka brokers
+    brokers := clowder.KafkaServers
+    fmt.Printf("Kafka brokers: %v\n", brokers)
+}
+```
+
+## Development
+
+### Running Tests
+
+Set the `ACG_CONFIG` environment variable to point to a test configuration file:
+
+```sh
+ACG_CONFIG="../../../tests/test.json" go test -v ./pkg/api/v1/...
+```
+
+### Project Structure
+
+- `pkg/api/v1/` - Main API package containing configuration types and loading logic
+- `tests/` - Test fixtures and sample configuration files
+- `sync_config.sh` - Script to synchronize configuration schema
+
+### Contributing
+
+Contributions are welcome. Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on commit messages, signing commits, and opening pull requests.
+
+## License
+
+This project does not currently include a license file. Please contact the maintainers for licensing information.
