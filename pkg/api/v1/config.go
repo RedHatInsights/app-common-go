@@ -2,9 +2,10 @@ package v1
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
 	"os"
+	"path/filepath"
 )
 
 type ConfigOption func(*AppConfig)
@@ -18,16 +19,12 @@ var KafkaServers []string
 
 func LoadConfig(filename string) (*AppConfig, error) {
 	var appConfig AppConfig
-	jsonFile, err := os.Open(filename)
+	content, err := os.ReadFile(filepath.Clean(filename))
 	if err != nil {
 		return nil, err
 	}
-	defer jsonFile.Close()
-	data, err := io.ReadAll(jsonFile)
-	if err != nil {
-		return nil, err
-	}
-	err = json.Unmarshal(data, &appConfig)
+
+	err = json.Unmarshal(content, &appConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +96,7 @@ func (a AppConfig) RdsCa() (string, error) {
 func (a AppConfig) KafkaCa(brokers ...BrokerConfig) (string, error) {
 	if len(brokers) == 0 {
 		if len(LoadedConfig.Kafka.Brokers) == 0 {
-			return "", fmt.Errorf("no broker availabl")
+			return "", errors.New("no broker availabl")
 		}
 		brokers = LoadedConfig.Kafka.Brokers
 	}
@@ -108,34 +105,33 @@ func (a AppConfig) KafkaCa(brokers ...BrokerConfig) (string, error) {
 
 func (a AppConfig) KafkaFirstCa() (string, error) {
 	if a.Kafka == nil || len(a.Kafka.Brokers) == 0 || a.Kafka.Brokers[0].Cacert == nil {
-		return "", fmt.Errorf("could not find ca for first broker")
+		return "", errors.New("could not find ca for first broker")
 	}
 	file := a.Kafka.Brokers[0].Cacert
 	return writeContent("kafkaca", "kafka", file)
 }
 
 func writeContent(dir string, file string, contentString *string) (string, error) {
-
 	dir, err := os.MkdirTemp("", dir)
 	if err != nil {
 		return "", err
 	}
 
 	if contentString == nil {
-		return "", fmt.Errorf("no RDS available")
+		return "", errors.New("no RDS available")
 	}
 
 	content := []byte(*contentString)
 
-	fil, err := os.CreateTemp(dir, file)
+	tmpFile, err := os.CreateTemp(dir, file)
 
 	if err != nil {
 		return "", err
 	}
 
-	if err := os.WriteFile(fil.Name(), content, 0666); err != nil {
+	if err := os.WriteFile(tmpFile.Name(), content, 0600); err != nil {
 		return "", err
 	}
 
-	return fil.Name(), nil
+	return tmpFile.Name(), nil
 }

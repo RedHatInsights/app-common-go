@@ -51,6 +51,7 @@ The library provides several helper functions and global variables for accessing
 - `clowder.IsClowderEnabled()` - Returns true if the `ACG_CONFIG` environment variable is set
 - `clowder.LoadedConfig.RdsCa()` - Creates a temporary file with the RDS CA certificate and returns the filename
 - `clowder.LoadedConfig.KafkaCa(<BrokerConfig>)` - Creates a temporary file with the Kafka CA certificate and returns the filename (if broker not given, first is chosen)
+- `clowder.LoadedConfig.KafkaFirstCa()` - Convenience method: creates a temporary file with the Kafka CA certificate from the first broker, with nil-safety checks
 
 ### Example: Accessing Kafka Configuration
 
@@ -60,7 +61,7 @@ if clowder.IsClowderEnabled() {
     if topic, ok := clowder.KafkaTopics["my-topic"]; ok {
         fmt.Printf("Topic name: %s\n", topic.Name)
     }
-    
+
     // Get all Kafka brokers
     brokers := clowder.KafkaServers
     fmt.Printf("Kafka brokers: %v\n", brokers)
@@ -74,13 +75,13 @@ if clowder.IsClowderEnabled() {
 Set the `ACG_CONFIG` environment variable to point to a test configuration file:
 
 ```sh
-ACG_CONFIG="../../../tests/test.json" go test -v ./pkg/api/v1/...
+ACG_CONFIG="testdata/test.json" go test -v ./...
 ```
 
 ### Project Structure
 
 - `pkg/api/v1/` - Main API package containing configuration types and loading logic
-- `tests/` - Test fixtures and sample configuration files
+- `pkg/api/v1/testdata/` - Test fixtures and sample configuration files
 - `sync_config.sh` - Script to synchronize configuration schema
 
 ### Contributing
