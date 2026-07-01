@@ -1,11 +1,11 @@
 package v1
 
 import (
-	"log"
 	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestClientLoad(t *testing.T) {
@@ -34,36 +34,31 @@ func TestClientLoad(t *testing.T) {
 	assert.Equal(t, "endpoint2", PrivateDependencyEndpoints["app2"]["endpoint2"].Name, "endpoint had wrong name")
 
 	rdsFilename, err := LoadedConfig.RdsCa()
-	assert.Nil(t, err, "error in creating RDSCa file")
+	assert.NoError(t, err, "error in creating RDSCa file")
 	content, err := os.ReadFile(rdsFilename)
-	assert.Nil(t, err, "error reading ca")
+	assert.NoError(t, err, "error reading ca")
 	assert.Equal(t, *LoadedConfig.Database.RdsCa, string(content), "rds ca didn't match")
 
 	kafkaFilename, err := LoadedConfig.KafkaCa(LoadedConfig.Kafka.Brokers[0])
-	assert.Nil(t, err, "error in creating KafkaCa file")
+	assert.NoError(t, err, "error in creating KafkaCa file")
 	content, err = os.ReadFile(kafkaFilename)
-	assert.Nil(t, err, "error reading ca")
+	assert.NoError(t, err, "error reading ca")
 	assert.Equal(t, *LoadedConfig.Kafka.Brokers[0].Cacert, string(content), "kafka ca didn't match")
 
 	kafkaFilename, err = LoadedConfig.KafkaCa()
-	assert.Nil(t, err, "error in creating KafkaCa file")
+	assert.NoError(t, err, "error in creating KafkaCa file")
 	content, err = os.ReadFile(kafkaFilename)
-	assert.Nil(t, err, "error reading ca")
+	assert.NoError(t, err, "error reading ca")
 	assert.Equal(t, *LoadedConfig.Kafka.Brokers[0].Cacert, string(content), "kafka ca didn't match")
 
-	assert.Equal(t, *LoadedConfig.Hostname, "testing", "top level hostname didn't match")
+	assert.Equal(t, "testing", *LoadedConfig.Hostname, "top level hostname didn't match")
 }
 
 func TestEmptyRDSCa(t *testing.T) {
-	cfg, err := LoadConfig("../../../tests/nordsca.json")
-	if err != nil {
-		log.Fatalf("can't load config: %s", err)
-	}
+	cfg, err := LoadConfig("testdata/nordsca.json")
+	require.NoErrorf(t, err, "can't load config: %s", err)
 
-	_, err = cfg.RdsCa()
-
-	if err == nil {
-		log.Fatal("error should have been created")
-	}
-
+	path, err := cfg.RdsCa()
+	require.Empty(t, path)
+	require.Error(t, err, "error should have been created")
 }

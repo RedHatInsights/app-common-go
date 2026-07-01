@@ -1,19 +1,60 @@
 ---
 name: Run Unit Tests
 
-'on':
-  - pull_request
-  - push
+on:
+  push:
+    branches:
+    - main
+    tags:
+    - "*"
+  pull_request:
+    branches:
+    - main
+    paths-ignore:
+    - "**/*.md"
+
+permissions: {}
 
 jobs:
-
-  testing:
-    runs-on: ubuntu-20.04
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
-      - name: Check out source code
-        uses: actions/checkout@v1
-      - name: Install package and dependencies
-        run: |
-          sudo apt-get install golang-1.18
-      - name: Run Tests
-        run: ACG_CONFIG="../../../tests/test.json" go test -v ./pkg/api/v1/...
+    - name: Checkout Repository
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      with:
+        show-progress: false
+    - name: Setup Golang
+      uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+      with:
+        go-version-file: go.mod
+    - name: Install golangci-lint
+      uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee # v9.2.1
+      with:
+        only-new-issues: true
+
+  test:
+    name: Tests
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        go: ["1.26", "1.25", "1.24", "1.18"]
+        os: [ubuntu-latest, macos-latest]
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      with:
+        show-progress: false
+    - name: Setup Golang
+      uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+      with:
+        go-version: ${{ matrix.go }}
+    - name: Run Test
+      run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+      env:
+        ACG_CONFIG: ./testdata/test.json

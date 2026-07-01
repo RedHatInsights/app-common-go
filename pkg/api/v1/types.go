@@ -9,42 +9,45 @@ import "reflect"
 // ClowdApp deployment configuration for Clowder enabled apps.
 type AppConfig struct {
 	// Defines the path to the BOPURL.
-	BOPURL *string `json:"BOPURL,omitempty" yaml:"BOPURL,omitempty" mapstructure:"BOPURL,omitempty"`
+	BOPURL *string `json:"BOPURL,omitempty,omitzero" yaml:"BOPURL,omitempty" mapstructure:"BOPURL,omitempty"`
 
 	// Database corresponds to the JSON schema field "database".
-	Database *DatabaseConfig `json:"database,omitempty" yaml:"database,omitempty" mapstructure:"database,omitempty"`
+	Database *DatabaseConfig `json:"database,omitempty,omitzero" yaml:"database,omitempty" mapstructure:"database,omitempty"`
+
+	// V2 public dependency endpoints with simplified URI-based structure
+	DependencyEndpoints *AppConfigDependencyEndpoints `json:"dependencyEndpoints,omitempty,omitzero" yaml:"dependencyEndpoints,omitempty" mapstructure:"dependencyEndpoints,omitempty"`
 
 	// Endpoints corresponds to the JSON schema field "endpoints".
-	Endpoints []DependencyEndpoint `json:"endpoints,omitempty" yaml:"endpoints,omitempty" mapstructure:"endpoints,omitempty"`
+	Endpoints []DependencyEndpoint `json:"endpoints,omitempty,omitzero" yaml:"endpoints,omitempty" mapstructure:"endpoints,omitempty"`
 
 	// FeatureFlags corresponds to the JSON schema field "featureFlags".
-	FeatureFlags *FeatureFlagsConfig `json:"featureFlags,omitempty" yaml:"featureFlags,omitempty" mapstructure:"featureFlags,omitempty"`
+	FeatureFlags *FeatureFlagsConfig `json:"featureFlags,omitempty,omitzero" yaml:"featureFlags,omitempty" mapstructure:"featureFlags,omitempty"`
 
 	// Defines the private H2C port that the app should be configured to listen on for
 	// H2C traffic.
-	H2CPrivatePort *int `json:"h2cPrivatePort,omitempty" yaml:"h2cPrivatePort,omitempty" mapstructure:"h2cPrivatePort,omitempty"`
+	H2CPrivatePort *int `json:"h2cPrivatePort,omitempty,omitzero" yaml:"h2cPrivatePort,omitempty" mapstructure:"h2cPrivatePort,omitempty"`
 
 	// Defines the public H2C port that the app should be configured to listen on for
 	// H2C traffic.
-	H2CPublicPort *int `json:"h2cPublicPort,omitempty" yaml:"h2cPublicPort,omitempty" mapstructure:"h2cPublicPort,omitempty"`
+	H2CPublicPort *int `json:"h2cPublicPort,omitempty,omitzero" yaml:"h2cPublicPort,omitempty" mapstructure:"h2cPublicPort,omitempty"`
 
 	// A set of configMap/secret hashes
-	HashCache *string `json:"hashCache,omitempty" yaml:"hashCache,omitempty" mapstructure:"hashCache,omitempty"`
+	HashCache *string `json:"hashCache,omitempty,omitzero" yaml:"hashCache,omitempty" mapstructure:"hashCache,omitempty"`
 
 	// The external hostname of the deployment, where applicable
-	Hostname *string `json:"hostname,omitempty" yaml:"hostname,omitempty" mapstructure:"hostname,omitempty"`
+	Hostname *string `json:"hostname,omitempty,omitzero" yaml:"hostname,omitempty" mapstructure:"hostname,omitempty"`
 
 	// InMemoryDb corresponds to the JSON schema field "inMemoryDb".
-	InMemoryDb *InMemoryDBConfig `json:"inMemoryDb,omitempty" yaml:"inMemoryDb,omitempty" mapstructure:"inMemoryDb,omitempty"`
+	InMemoryDb *InMemoryDBConfig `json:"inMemoryDb,omitempty,omitzero" yaml:"inMemoryDb,omitempty" mapstructure:"inMemoryDb,omitempty"`
 
 	// Kafka corresponds to the JSON schema field "kafka".
-	Kafka *KafkaConfig `json:"kafka,omitempty" yaml:"kafka,omitempty" mapstructure:"kafka,omitempty"`
+	Kafka *KafkaConfig `json:"kafka,omitempty,omitzero" yaml:"kafka,omitempty" mapstructure:"kafka,omitempty"`
 
 	// Logging corresponds to the JSON schema field "logging".
 	Logging LoggingConfig `json:"logging" yaml:"logging" mapstructure:"logging"`
 
 	// Metadata corresponds to the JSON schema field "metadata".
-	Metadata *AppMetadata `json:"metadata,omitempty" yaml:"metadata,omitempty" mapstructure:"metadata,omitempty"`
+	Metadata *AppMetadata `json:"metadata,omitempty,omitzero" yaml:"metadata,omitempty" mapstructure:"metadata,omitempty"`
 
 	// Defines the path to the metrics server that the app should be configured to
 	// listen on for metric traffic.
@@ -55,46 +58,121 @@ type AppConfig struct {
 	MetricsPort int `json:"metricsPort" yaml:"metricsPort" mapstructure:"metricsPort"`
 
 	// ObjectStore corresponds to the JSON schema field "objectStore".
-	ObjectStore *ObjectStoreConfig `json:"objectStore,omitempty" yaml:"objectStore,omitempty" mapstructure:"objectStore,omitempty"`
+	ObjectStore *ObjectStoreConfig `json:"objectStore,omitempty,omitzero" yaml:"objectStore,omitempty" mapstructure:"objectStore,omitempty"`
+
+	// V2 private dependency endpoints with simplified URI-based structure
+	PrivateDependencyEndpoints *AppConfigPrivateDependencyEndpoints `json:"privateDependencyEndpoints,omitempty,omitzero" yaml:"privateDependencyEndpoints,omitempty" mapstructure:"privateDependencyEndpoints,omitempty"`
 
 	// PrivateEndpoints corresponds to the JSON schema field "privateEndpoints".
-	PrivateEndpoints []PrivateDependencyEndpoint `json:"privateEndpoints,omitempty" yaml:"privateEndpoints,omitempty" mapstructure:"privateEndpoints,omitempty"`
+	PrivateEndpoints []PrivateDependencyEndpoint `json:"privateEndpoints,omitempty,omitzero" yaml:"privateEndpoints,omitempty" mapstructure:"privateEndpoints,omitempty"`
 
 	// Defines the private port that the app should be configured to listen on for API
 	// traffic.
-	PrivatePort *int `json:"privatePort,omitempty" yaml:"privatePort,omitempty" mapstructure:"privatePort,omitempty"`
+	PrivatePort *int `json:"privatePort,omitempty,omitzero" yaml:"privatePort,omitempty" mapstructure:"privatePort,omitempty"`
 
 	// PrometheusGateway corresponds to the JSON schema field "prometheusGateway".
-	PrometheusGateway *PrometheusGatewayConfig `json:"prometheusGateway,omitempty" yaml:"prometheusGateway,omitempty" mapstructure:"prometheusGateway,omitempty"`
+	PrometheusGateway *PrometheusGatewayConfig `json:"prometheusGateway,omitempty,omitzero" yaml:"prometheusGateway,omitempty" mapstructure:"prometheusGateway,omitempty"`
 
 	// Defines the public port that the app should be configured to listen on for API
 	// traffic.
-	PublicPort *int `json:"publicPort,omitempty" yaml:"publicPort,omitempty" mapstructure:"publicPort,omitempty"`
+	PublicPort *int `json:"publicPort,omitempty,omitzero" yaml:"publicPort,omitempty" mapstructure:"publicPort,omitempty"`
 
 	// Defines path to default CA certificate for TLS connections to other ClowdApps.
 	// Only populated when TLS is enabled for entire ClowdEnvironment.
-	TlsCAPath *string `json:"tlsCAPath,omitempty" yaml:"tlsCAPath,omitempty" mapstructure:"tlsCAPath,omitempty"`
+	TlsCAPath *string `json:"tlsCAPath,omitempty,omitzero" yaml:"tlsCAPath,omitempty" mapstructure:"tlsCAPath,omitempty"`
 
 	// Deprecated: Use 'publicPort' instead.
-	WebPort *int `json:"webPort,omitempty" yaml:"webPort,omitempty" mapstructure:"webPort,omitempty"`
+	WebPort *int `json:"webPort,omitempty,omitzero" yaml:"webPort,omitempty" mapstructure:"webPort,omitempty"`
+}
+
+// V2 public dependency endpoints with simplified URI-based structure
+type AppConfigDependencyEndpoints struct {
+	// Version 2 public dependency endpoint format with URI-based endpoints
+	V2 AppConfigDependencyEndpointsV2 `json:"v2,omitempty,omitzero" yaml:"v2,omitempty" mapstructure:"v2,omitempty"`
+}
+
+// Version 2 public dependency endpoint format with URI-based endpoints
+type AppConfigDependencyEndpointsV2 map[string]interface{}
+
+// V2 private dependency endpoints with simplified URI-based structure
+type AppConfigPrivateDependencyEndpoints struct {
+	// Version 2 private dependency endpoint format with URI-based endpoints
+	V2 AppConfigPrivateDependencyEndpointsV2 `json:"v2,omitempty,omitzero" yaml:"v2,omitempty" mapstructure:"v2,omitempty"`
+}
+
+// Version 2 private dependency endpoint format with URI-based endpoints
+type AppConfigPrivateDependencyEndpointsV2 map[string]interface{}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *AppConfig) UnmarshalJSON(value []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if _, ok := raw["logging"]; raw != nil && !ok {
+		return fmt.Errorf("field logging in AppConfig: required")
+	}
+	if _, ok := raw["metricsPath"]; raw != nil && !ok {
+		return fmt.Errorf("field metricsPath in AppConfig: required")
+	}
+	if _, ok := raw["metricsPort"]; raw != nil && !ok {
+		return fmt.Errorf("field metricsPort in AppConfig: required")
+	}
+	type Plain AppConfig
+	var plain Plain
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	*j = AppConfig(plain)
+	return nil
 }
 
 // Arbitrary metadata pertaining to the application application
 type AppMetadata struct {
 	// Metadata pertaining to an application's deployments
-	Deployments []DeploymentMetadata `json:"deployments,omitempty" yaml:"deployments,omitempty" mapstructure:"deployments,omitempty"`
+	Deployments []DeploymentMetadata `json:"deployments,omitempty,omitzero" yaml:"deployments,omitempty" mapstructure:"deployments,omitempty"`
 
 	// Name of the ClowdEnvironment this ClowdApp runs in
-	EnvName *string `json:"envName,omitempty" yaml:"envName,omitempty" mapstructure:"envName,omitempty"`
+	EnvName *string `json:"envName,omitempty,omitzero" yaml:"envName,omitempty" mapstructure:"envName,omitempty"`
 
 	// Name of the ClowdApp
-	Name *string `json:"name,omitempty" yaml:"name,omitempty" mapstructure:"name,omitempty"`
+	Name *string `json:"name,omitempty,omitzero" yaml:"name,omitempty" mapstructure:"name,omitempty"`
+}
+
+// Broker Configuration
+type BrokerConfig struct {
+	// Authtype corresponds to the JSON schema field "authtype".
+	Authtype *BrokerConfigAuthtype `json:"authtype,omitempty,omitzero" yaml:"authtype,omitempty" mapstructure:"authtype,omitempty"`
+
+	// CA certificate trust list for broker in PEM format. If absent, client should
+	// use OS default trust list
+	Cacert *string `json:"cacert,omitempty,omitzero" yaml:"cacert,omitempty" mapstructure:"cacert,omitempty"`
+
+	// Hostname of kafka broker
+	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
+
+	// Port of kafka broker
+	Port *int `json:"port,omitempty,omitzero" yaml:"port,omitempty" mapstructure:"port,omitempty"`
+
+	// Sasl corresponds to the JSON schema field "sasl".
+	Sasl *KafkaSASLConfig `json:"sasl,omitempty,omitzero" yaml:"sasl,omitempty" mapstructure:"sasl,omitempty"`
+
+	// Broker security procotol, expect one of either: SASL_SSL, SSL
+	SecurityProtocol *string `json:"securityProtocol,omitempty,omitzero" yaml:"securityProtocol,omitempty" mapstructure:"securityProtocol,omitempty"`
+}
+
+type BrokerConfigAuthtype string
+
+const BrokerConfigAuthtypeSasl BrokerConfigAuthtype = "sasl"
+
+var enumValues_BrokerConfigAuthtype = []interface{}{
+	"sasl",
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *BrokerConfigAuthtype) UnmarshalJSON(b []byte) error {
+func (j *BrokerConfigAuthtype) UnmarshalJSON(value []byte) error {
 	var v string
-	if err := json.Unmarshal(b, &v); err != nil {
+	if err := json.Unmarshal(value, &v); err != nil {
 		return err
 	}
 	var ok bool
@@ -112,288 +190,20 @@ func (j *BrokerConfigAuthtype) UnmarshalJSON(b []byte) error {
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *DependencyEndpoint) UnmarshalJSON(b []byte) error {
+func (j *BrokerConfig) UnmarshalJSON(value []byte) error {
 	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
+	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
 	}
-	if v, ok := raw["apiPath"]; !ok || v == nil {
-		return fmt.Errorf("field apiPath in DependencyEndpoint: required")
-	}
-	if v, ok := raw["app"]; !ok || v == nil {
-		return fmt.Errorf("field app in DependencyEndpoint: required")
-	}
-	if v, ok := raw["hostname"]; !ok || v == nil {
-		return fmt.Errorf("field hostname in DependencyEndpoint: required")
-	}
-	if v, ok := raw["name"]; !ok || v == nil {
-		return fmt.Errorf("field name in DependencyEndpoint: required")
-	}
-	if v, ok := raw["port"]; !ok || v == nil {
-		return fmt.Errorf("field port in DependencyEndpoint: required")
-	}
-	type Plain DependencyEndpoint
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = DependencyEndpoint(plain)
-	return nil
-}
-
-type FeatureFlagsConfigScheme string
-
-var enumValues_FeatureFlagsConfigScheme = []interface{}{
-	"http",
-	"https",
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *FeatureFlagsConfigScheme) UnmarshalJSON(b []byte) error {
-	var v string
-	if err := json.Unmarshal(b, &v); err != nil {
-		return err
-	}
-	var ok bool
-	for _, expected := range enumValues_FeatureFlagsConfigScheme {
-		if reflect.DeepEqual(v, expected) {
-			ok = true
-			break
-		}
-	}
-	if !ok {
-		return fmt.Errorf("invalid value (expected one of %#v): %#v", enumValues_FeatureFlagsConfigScheme, v)
-	}
-	*j = FeatureFlagsConfigScheme(v)
-	return nil
-}
-
-const FeatureFlagsConfigSchemeHttp FeatureFlagsConfigScheme = "http"
-const FeatureFlagsConfigSchemeHttps FeatureFlagsConfigScheme = "https"
-
-// Feature Flags Configuration
-type FeatureFlagsConfig struct {
-	// Defines the client access token to use when connect to the FeatureFlags server
-	ClientAccessToken *string `json:"clientAccessToken,omitempty" yaml:"clientAccessToken,omitempty" mapstructure:"clientAccessToken,omitempty"`
-
-	// Defines the hostname for the FeatureFlags server
-	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
-
-	// Defines the port for the FeatureFlags server
-	Port int `json:"port" yaml:"port" mapstructure:"port"`
-
-	// Details the scheme to use for FeatureFlags http/https
-	Scheme FeatureFlagsConfigScheme `json:"scheme" yaml:"scheme" mapstructure:"scheme"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *FeatureFlagsConfig) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if v, ok := raw["hostname"]; !ok || v == nil {
-		return fmt.Errorf("field hostname in FeatureFlagsConfig: required")
-	}
-	if v, ok := raw["port"]; !ok || v == nil {
-		return fmt.Errorf("field port in FeatureFlagsConfig: required")
-	}
-	if v, ok := raw["scheme"]; !ok || v == nil {
-		return fmt.Errorf("field scheme in FeatureFlagsConfig: required")
-	}
-	type Plain FeatureFlagsConfig
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = FeatureFlagsConfig(plain)
-	return nil
-}
-
-// In Memory DB Configuration
-type InMemoryDBConfig struct {
-	// Defines the hostname for the In Memory DB server configuration.
-	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
-
-	// Defines the password for the In Memory DB server configuration.
-	Password *string `json:"password,omitempty" yaml:"password,omitempty" mapstructure:"password,omitempty"`
-
-	// Defines the port for the In Memory DB server configuration.
-	Port int `json:"port" yaml:"port" mapstructure:"port"`
-
-	// Defines the sslMode used by the In Memory DB server coniguration
-	SslMode *bool `json:"sslMode,omitempty" yaml:"sslMode,omitempty" mapstructure:"sslMode,omitempty"`
-
-	// Defines the username for the In Memory DB server configuration.
-	Username *string `json:"username,omitempty" yaml:"username,omitempty" mapstructure:"username,omitempty"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *InMemoryDBConfig) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if v, ok := raw["hostname"]; !ok || v == nil {
-		return fmt.Errorf("field hostname in InMemoryDBConfig: required")
-	}
-	if v, ok := raw["port"]; !ok || v == nil {
-		return fmt.Errorf("field port in InMemoryDBConfig: required")
-	}
-	type Plain InMemoryDBConfig
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = InMemoryDBConfig(plain)
-	return nil
-}
-
-type BrokerConfigAuthtype string
-
-var enumValues_BrokerConfigAuthtype = []interface{}{
-	"sasl",
-}
-
-// Topic Configuration
-type TopicConfig struct {
-	// The name of the actual topic on the Kafka server.
-	Name string `json:"name" yaml:"name" mapstructure:"name"`
-
-	// The name that the app requested in the ClowdApp definition.
-	RequestedName string `json:"requestedName" yaml:"requestedName" mapstructure:"requestedName"`
-}
-
-const BrokerConfigAuthtypeSasl BrokerConfigAuthtype = "sasl"
-
-// SASL Configuration for Kafka
-type KafkaSASLConfig struct {
-	// Broker SASL password
-	Password *string `json:"password,omitempty" yaml:"password,omitempty" mapstructure:"password,omitempty"`
-
-	// Broker SASL mechanism, expect: SCRAM-SHA-512
-	SaslMechanism *string `json:"saslMechanism,omitempty" yaml:"saslMechanism,omitempty" mapstructure:"saslMechanism,omitempty"`
-
-	// Broker security protocol, expect one of either: SASL_SSL, SSL. DEPRECATED, use
-	// the top level securityProtocol field instead
-	SecurityProtocol *string `json:"securityProtocol,omitempty" yaml:"securityProtocol,omitempty" mapstructure:"securityProtocol,omitempty"`
-
-	// Broker SASL username
-	Username *string `json:"username,omitempty" yaml:"username,omitempty" mapstructure:"username,omitempty"`
-}
-
-// Broker Configuration
-type BrokerConfig struct {
-	// Authtype corresponds to the JSON schema field "authtype".
-	Authtype *BrokerConfigAuthtype `json:"authtype,omitempty" yaml:"authtype,omitempty" mapstructure:"authtype,omitempty"`
-
-	// CA certificate trust list for broker in PEM format. If absent, client should
-	// use OS default trust list
-	Cacert *string `json:"cacert,omitempty" yaml:"cacert,omitempty" mapstructure:"cacert,omitempty"`
-
-	// Hostname of kafka broker
-	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
-
-	// Port of kafka broker
-	Port *int `json:"port,omitempty" yaml:"port,omitempty" mapstructure:"port,omitempty"`
-
-	// Sasl corresponds to the JSON schema field "sasl".
-	Sasl *KafkaSASLConfig `json:"sasl,omitempty" yaml:"sasl,omitempty" mapstructure:"sasl,omitempty"`
-
-	// Broker security procotol, expect one of either: SASL_SSL, SSL
-	SecurityProtocol *string `json:"securityProtocol,omitempty" yaml:"securityProtocol,omitempty" mapstructure:"securityProtocol,omitempty"`
-}
-
-// Dependent service connection info
-type DependencyEndpoint struct {
-	// The top level api path that the app should serve from /api/<apiPath>
-	// (deprecated, use apiPaths)
-	ApiPath string `json:"apiPath" yaml:"apiPath" mapstructure:"apiPath"`
-
-	// The list of API paths (each matching format: '/api/some-path/') that this app
-	// will serve requests from
-	ApiPaths []string `json:"apiPaths,omitempty" yaml:"apiPaths,omitempty" mapstructure:"apiPaths,omitempty"`
-
-	// The app name of the ClowdApp hosting the service.
-	App string `json:"app" yaml:"app" mapstructure:"app"`
-
-	// The H2C port of the dependent service.
-	H2CPort *int `json:"h2cPort,omitempty" yaml:"h2cPort,omitempty" mapstructure:"h2cPort,omitempty"`
-
-	// The H2C TLS port of the dependent service.
-	H2CTLSPort *int `json:"h2cTLSPort,omitempty" yaml:"h2cTLSPort,omitempty" mapstructure:"h2cTLSPort,omitempty"`
-
-	// The hostname of the dependent service.
-	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
-
-	// The PodSpec name of the dependent service inside the ClowdApp.
-	Name string `json:"name" yaml:"name" mapstructure:"name"`
-
-	// The port of the dependent service.
-	Port int `json:"port" yaml:"port" mapstructure:"port"`
-
-	// Defines path to CA certificate for TLS connections to this ClowdApp. If
-	// present, this should override use of default TLS CA path.
-	TlsCAPath *string `json:"tlsCAPath,omitempty" yaml:"tlsCAPath,omitempty" mapstructure:"tlsCAPath,omitempty"`
-
-	// The TLS port of the dependent service.
-	TlsPort *int `json:"tlsPort,omitempty" yaml:"tlsPort,omitempty" mapstructure:"tlsPort,omitempty"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *BrokerConfig) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if v, ok := raw["hostname"]; !ok || v == nil {
+	if _, ok := raw["hostname"]; raw != nil && !ok {
 		return fmt.Errorf("field hostname in BrokerConfig: required")
 	}
 	type Plain BrokerConfig
 	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
+	if err := json.Unmarshal(value, &plain); err != nil {
 		return err
 	}
 	*j = BrokerConfig(plain)
-	return nil
-}
-
-// Logging Configuration
-type LoggingConfig struct {
-	// Cloudwatch corresponds to the JSON schema field "cloudwatch".
-	Cloudwatch *CloudWatchConfig `json:"cloudwatch,omitempty" yaml:"cloudwatch,omitempty" mapstructure:"cloudwatch,omitempty"`
-
-	// Defines the type of logging configuration
-	Type string `json:"type" yaml:"type" mapstructure:"type"`
-}
-
-// Kafka Configuration
-type KafkaConfig struct {
-	// Defines the brokers the app should connect to for Kafka services.
-	Brokers []BrokerConfig `json:"brokers" yaml:"brokers" mapstructure:"brokers"`
-
-	// Defines a list of the topic configurations available to the application.
-	Topics []TopicConfig `json:"topics" yaml:"topics" mapstructure:"topics"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *KafkaConfig) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if v, ok := raw["brokers"]; !ok || v == nil {
-		return fmt.Errorf("field brokers in KafkaConfig: required")
-	}
-	if v, ok := raw["topics"]; !ok || v == nil {
-		return fmt.Errorf("field topics in KafkaConfig: required")
-	}
-	type Plain KafkaConfig
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = KafkaConfig(plain)
 	return nil
 }
 
@@ -413,98 +223,29 @@ type CloudWatchConfig struct {
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *CloudWatchConfig) UnmarshalJSON(b []byte) error {
+func (j *CloudWatchConfig) UnmarshalJSON(value []byte) error {
 	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
+	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
 	}
-	if v, ok := raw["accessKeyId"]; !ok || v == nil {
+	if _, ok := raw["accessKeyId"]; raw != nil && !ok {
 		return fmt.Errorf("field accessKeyId in CloudWatchConfig: required")
 	}
-	if v, ok := raw["logGroup"]; !ok || v == nil {
+	if _, ok := raw["logGroup"]; raw != nil && !ok {
 		return fmt.Errorf("field logGroup in CloudWatchConfig: required")
 	}
-	if v, ok := raw["region"]; !ok || v == nil {
+	if _, ok := raw["region"]; raw != nil && !ok {
 		return fmt.Errorf("field region in CloudWatchConfig: required")
 	}
-	if v, ok := raw["secretAccessKey"]; !ok || v == nil {
+	if _, ok := raw["secretAccessKey"]; raw != nil && !ok {
 		return fmt.Errorf("field secretAccessKey in CloudWatchConfig: required")
 	}
 	type Plain CloudWatchConfig
 	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
+	if err := json.Unmarshal(value, &plain); err != nil {
 		return err
 	}
 	*j = CloudWatchConfig(plain)
-	return nil
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *TopicConfig) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if v, ok := raw["name"]; !ok || v == nil {
-		return fmt.Errorf("field name in TopicConfig: required")
-	}
-	if v, ok := raw["requestedName"]; !ok || v == nil {
-		return fmt.Errorf("field requestedName in TopicConfig: required")
-	}
-	type Plain TopicConfig
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = TopicConfig(plain)
-	return nil
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *LoggingConfig) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if v, ok := raw["type"]; !ok || v == nil {
-		return fmt.Errorf("field type in LoggingConfig: required")
-	}
-	type Plain LoggingConfig
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = LoggingConfig(plain)
-	return nil
-}
-
-// Deployment Metadata
-type DeploymentMetadata struct {
-	// Image used by deployment
-	Image string `json:"image" yaml:"image" mapstructure:"image"`
-
-	// Name of deployment
-	Name string `json:"name" yaml:"name" mapstructure:"name"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *DeploymentMetadata) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if v, ok := raw["image"]; !ok || v == nil {
-		return fmt.Errorf("field image in DeploymentMetadata: required")
-	}
-	if v, ok := raw["name"]; !ok || v == nil {
-		return fmt.Errorf("field name in DeploymentMetadata: required")
-	}
-	type Plain DeploymentMetadata
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = DeploymentMetadata(plain)
 	return nil
 }
 
@@ -529,7 +270,7 @@ type DatabaseConfig struct {
 	Port int `json:"port" yaml:"port" mapstructure:"port"`
 
 	// Defines the CA used to access the database.
-	RdsCa *string `json:"rdsCa,omitempty" yaml:"rdsCa,omitempty" mapstructure:"rdsCa,omitempty"`
+	RdsCa *string `json:"rdsCa,omitempty,omitzero" yaml:"rdsCa,omitempty" mapstructure:"rdsCa,omitempty"`
 
 	// Defines the postgres SSL mode that should be used.
 	SslMode string `json:"sslMode" yaml:"sslMode" mapstructure:"sslMode"`
@@ -538,106 +279,63 @@ type DatabaseConfig struct {
 	Username string `json:"username" yaml:"username" mapstructure:"username"`
 }
 
-// Object Storage Bucket
-type ObjectStoreBucket struct {
-	// Defines the access key for specificed bucket.
-	AccessKey *string `json:"accessKey,omitempty" yaml:"accessKey,omitempty" mapstructure:"accessKey,omitempty"`
-
-	// Defines the endpoint for the Object Storage server configuration.
-	Endpoint *string `json:"endpoint,omitempty" yaml:"endpoint,omitempty" mapstructure:"endpoint,omitempty"`
-
-	// The actual name of the bucket being accessed.
-	Name string `json:"name" yaml:"name" mapstructure:"name"`
-
-	// Defines the region for the specified bucket.
-	Region *string `json:"region,omitempty" yaml:"region,omitempty" mapstructure:"region,omitempty"`
-
-	// The name that was requested for the bucket in the ClowdApp.
-	RequestedName string `json:"requestedName" yaml:"requestedName" mapstructure:"requestedName"`
-
-	// Defines the secret key for the specified bucket.
-	SecretKey *string `json:"secretKey,omitempty" yaml:"secretKey,omitempty" mapstructure:"secretKey,omitempty"`
-
-	// Details if the Object Server uses TLS.
-	Tls *bool `json:"tls,omitempty" yaml:"tls,omitempty" mapstructure:"tls,omitempty"`
-}
-
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *ObjectStoreBucket) UnmarshalJSON(b []byte) error {
+func (j *DatabaseConfig) UnmarshalJSON(value []byte) error {
 	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
+	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
 	}
-	if v, ok := raw["name"]; !ok || v == nil {
-		return fmt.Errorf("field name in ObjectStoreBucket: required")
+	if _, ok := raw["adminPassword"]; raw != nil && !ok {
+		return fmt.Errorf("field adminPassword in DatabaseConfig: required")
 	}
-	if v, ok := raw["requestedName"]; !ok || v == nil {
-		return fmt.Errorf("field requestedName in ObjectStoreBucket: required")
+	if _, ok := raw["adminUsername"]; raw != nil && !ok {
+		return fmt.Errorf("field adminUsername in DatabaseConfig: required")
 	}
-	type Plain ObjectStoreBucket
+	if _, ok := raw["hostname"]; raw != nil && !ok {
+		return fmt.Errorf("field hostname in DatabaseConfig: required")
+	}
+	if _, ok := raw["name"]; raw != nil && !ok {
+		return fmt.Errorf("field name in DatabaseConfig: required")
+	}
+	if _, ok := raw["password"]; raw != nil && !ok {
+		return fmt.Errorf("field password in DatabaseConfig: required")
+	}
+	if _, ok := raw["port"]; raw != nil && !ok {
+		return fmt.Errorf("field port in DatabaseConfig: required")
+	}
+	if _, ok := raw["sslMode"]; raw != nil && !ok {
+		return fmt.Errorf("field sslMode in DatabaseConfig: required")
+	}
+	if _, ok := raw["username"]; raw != nil && !ok {
+		return fmt.Errorf("field username in DatabaseConfig: required")
+	}
+	type Plain DatabaseConfig
 	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
+	if err := json.Unmarshal(value, &plain); err != nil {
 		return err
 	}
-	*j = ObjectStoreBucket(plain)
-	return nil
-}
-
-// Object Storage Configuration
-type ObjectStoreConfig struct {
-	// Defines the access key for the Object Storage server configuration.
-	AccessKey *string `json:"accessKey,omitempty" yaml:"accessKey,omitempty" mapstructure:"accessKey,omitempty"`
-
-	// Buckets corresponds to the JSON schema field "buckets".
-	Buckets []ObjectStoreBucket `json:"buckets,omitempty" yaml:"buckets,omitempty" mapstructure:"buckets,omitempty"`
-
-	// Defines the hostname for the Object Storage server configuration.
-	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
-
-	// Defines the port for the Object Storage server configuration.
-	Port int `json:"port" yaml:"port" mapstructure:"port"`
-
-	// Defines the secret key for the Object Storage server configuration.
-	SecretKey *string `json:"secretKey,omitempty" yaml:"secretKey,omitempty" mapstructure:"secretKey,omitempty"`
-
-	// Details if the Object Server uses TLS.
-	Tls bool `json:"tls" yaml:"tls" mapstructure:"tls"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *ObjectStoreConfig) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if v, ok := raw["hostname"]; !ok || v == nil {
-		return fmt.Errorf("field hostname in ObjectStoreConfig: required")
-	}
-	if v, ok := raw["port"]; !ok || v == nil {
-		return fmt.Errorf("field port in ObjectStoreConfig: required")
-	}
-	if v, ok := raw["tls"]; !ok || v == nil {
-		return fmt.Errorf("field tls in ObjectStoreConfig: required")
-	}
-	type Plain ObjectStoreConfig
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = ObjectStoreConfig(plain)
+	*j = DatabaseConfig(plain)
 	return nil
 }
 
 // Dependent service connection info
-type PrivateDependencyEndpoint struct {
+type DependencyEndpoint struct {
+	// The top level api path that the app should serve from /api/<apiPath>
+	// (deprecated, use apiPaths)
+	ApiPath string `json:"apiPath" yaml:"apiPath" mapstructure:"apiPath"`
+
+	// The list of API paths (each matching format: '/api/some-path/') that this app
+	// will serve requests from
+	ApiPaths []string `json:"apiPaths,omitempty,omitzero" yaml:"apiPaths,omitempty" mapstructure:"apiPaths,omitempty"`
+
 	// The app name of the ClowdApp hosting the service.
 	App string `json:"app" yaml:"app" mapstructure:"app"`
 
 	// The H2C port of the dependent service.
-	H2CPort *int `json:"h2cPort,omitempty" yaml:"h2cPort,omitempty" mapstructure:"h2cPort,omitempty"`
+	H2CPort *int `json:"h2cPort,omitempty,omitzero" yaml:"h2cPort,omitempty" mapstructure:"h2cPort,omitempty"`
 
 	// The H2C TLS port of the dependent service.
-	H2CTLSPort *int `json:"h2cTLSPort,omitempty" yaml:"h2cTLSPort,omitempty" mapstructure:"h2cTLSPort,omitempty"`
+	H2CTLSPort *int `json:"h2cTLSPort,omitempty,omitzero" yaml:"h2cTLSPort,omitempty" mapstructure:"h2cTLSPort,omitempty"`
 
 	// The hostname of the dependent service.
 	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
@@ -650,33 +348,421 @@ type PrivateDependencyEndpoint struct {
 
 	// Defines path to CA certificate for TLS connections to this ClowdApp. If
 	// present, this should override use of default TLS CA path.
-	TlsCAPath *string `json:"tlsCAPath,omitempty" yaml:"tlsCAPath,omitempty" mapstructure:"tlsCAPath,omitempty"`
+	TlsCAPath *string `json:"tlsCAPath,omitempty,omitzero" yaml:"tlsCAPath,omitempty" mapstructure:"tlsCAPath,omitempty"`
 
 	// The TLS port of the dependent service.
-	TlsPort *int `json:"tlsPort,omitempty" yaml:"tlsPort,omitempty" mapstructure:"tlsPort,omitempty"`
+	TlsPort *int `json:"tlsPort,omitempty,omitzero" yaml:"tlsPort,omitempty" mapstructure:"tlsPort,omitempty"`
+}
+
+// V2 dependency endpoint with complete URI
+type DependencyEndpointV2 struct {
+	// Path to CA certificate file for TLS/HTTPS connections. Only present for
+	// https:// URIs.
+	CaCertificate *string `json:"ca_certificate,omitempty,omitzero" yaml:"ca_certificate,omitempty" mapstructure:"ca_certificate,omitempty"`
+
+	// Complete URI including protocol, hostname, and port (e.g.,
+	// 'http://service.ns.svc:8000', 'https://service:8443')
+	Uri string `json:"uri" yaml:"uri" mapstructure:"uri"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *PrivateDependencyEndpoint) UnmarshalJSON(b []byte) error {
+func (j *DependencyEndpointV2) UnmarshalJSON(value []byte) error {
 	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
+	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
 	}
-	if v, ok := raw["app"]; !ok || v == nil {
+	if _, ok := raw["uri"]; raw != nil && !ok {
+		return fmt.Errorf("field uri in DependencyEndpointV2: required")
+	}
+	type Plain DependencyEndpointV2
+	var plain Plain
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	*j = DependencyEndpointV2(plain)
+	return nil
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *DependencyEndpoint) UnmarshalJSON(value []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if _, ok := raw["apiPath"]; raw != nil && !ok {
+		return fmt.Errorf("field apiPath in DependencyEndpoint: required")
+	}
+	if _, ok := raw["app"]; raw != nil && !ok {
+		return fmt.Errorf("field app in DependencyEndpoint: required")
+	}
+	if _, ok := raw["hostname"]; raw != nil && !ok {
+		return fmt.Errorf("field hostname in DependencyEndpoint: required")
+	}
+	if _, ok := raw["name"]; raw != nil && !ok {
+		return fmt.Errorf("field name in DependencyEndpoint: required")
+	}
+	if _, ok := raw["port"]; raw != nil && !ok {
+		return fmt.Errorf("field port in DependencyEndpoint: required")
+	}
+	type Plain DependencyEndpoint
+	var plain Plain
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	*j = DependencyEndpoint(plain)
+	return nil
+}
+
+// Deployment Metadata
+type DeploymentMetadata struct {
+	// Image used by deployment
+	Image string `json:"image" yaml:"image" mapstructure:"image"`
+
+	// Name of deployment
+	Name string `json:"name" yaml:"name" mapstructure:"name"`
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *DeploymentMetadata) UnmarshalJSON(value []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if _, ok := raw["image"]; raw != nil && !ok {
+		return fmt.Errorf("field image in DeploymentMetadata: required")
+	}
+	if _, ok := raw["name"]; raw != nil && !ok {
+		return fmt.Errorf("field name in DeploymentMetadata: required")
+	}
+	type Plain DeploymentMetadata
+	var plain Plain
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	*j = DeploymentMetadata(plain)
+	return nil
+}
+
+// Feature Flags Configuration
+type FeatureFlagsConfig struct {
+	// Defines the client access token to use when connect to the FeatureFlags server
+	ClientAccessToken *string `json:"clientAccessToken,omitempty,omitzero" yaml:"clientAccessToken,omitempty" mapstructure:"clientAccessToken,omitempty"`
+
+	// Defines the hostname for the FeatureFlags server
+	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
+
+	// Defines the port for the FeatureFlags server
+	Port int `json:"port" yaml:"port" mapstructure:"port"`
+
+	// Details the scheme to use for FeatureFlags http/https
+	Scheme FeatureFlagsConfigScheme `json:"scheme" yaml:"scheme" mapstructure:"scheme"`
+}
+
+type FeatureFlagsConfigScheme string
+
+const FeatureFlagsConfigSchemeHttp FeatureFlagsConfigScheme = "http"
+const FeatureFlagsConfigSchemeHttps FeatureFlagsConfigScheme = "https"
+
+var enumValues_FeatureFlagsConfigScheme = []interface{}{
+	"http",
+	"https",
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *FeatureFlagsConfigScheme) UnmarshalJSON(value []byte) error {
+	var v string
+	if err := json.Unmarshal(value, &v); err != nil {
+		return err
+	}
+	var ok bool
+	for _, expected := range enumValues_FeatureFlagsConfigScheme {
+		if reflect.DeepEqual(v, expected) {
+			ok = true
+			break
+		}
+	}
+	if !ok {
+		return fmt.Errorf("invalid value (expected one of %#v): %#v", enumValues_FeatureFlagsConfigScheme, v)
+	}
+	*j = FeatureFlagsConfigScheme(v)
+	return nil
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *FeatureFlagsConfig) UnmarshalJSON(value []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if _, ok := raw["hostname"]; raw != nil && !ok {
+		return fmt.Errorf("field hostname in FeatureFlagsConfig: required")
+	}
+	if _, ok := raw["port"]; raw != nil && !ok {
+		return fmt.Errorf("field port in FeatureFlagsConfig: required")
+	}
+	if _, ok := raw["scheme"]; raw != nil && !ok {
+		return fmt.Errorf("field scheme in FeatureFlagsConfig: required")
+	}
+	type Plain FeatureFlagsConfig
+	var plain Plain
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	*j = FeatureFlagsConfig(plain)
+	return nil
+}
+
+// In Memory DB Configuration
+type InMemoryDBConfig struct {
+	// Defines the hostname for the In Memory DB server configuration.
+	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
+
+	// Defines the password for the In Memory DB server configuration.
+	Password *string `json:"password,omitempty,omitzero" yaml:"password,omitempty" mapstructure:"password,omitempty"`
+
+	// Defines the port for the In Memory DB server configuration.
+	Port int `json:"port" yaml:"port" mapstructure:"port"`
+
+	// Defines the sslMode used by the In Memory DB server coniguration
+	SslMode *bool `json:"sslMode,omitempty,omitzero" yaml:"sslMode,omitempty" mapstructure:"sslMode,omitempty"`
+
+	// Defines the username for the In Memory DB server configuration.
+	Username *string `json:"username,omitempty,omitzero" yaml:"username,omitempty" mapstructure:"username,omitempty"`
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *InMemoryDBConfig) UnmarshalJSON(value []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if _, ok := raw["hostname"]; raw != nil && !ok {
+		return fmt.Errorf("field hostname in InMemoryDBConfig: required")
+	}
+	if _, ok := raw["port"]; raw != nil && !ok {
+		return fmt.Errorf("field port in InMemoryDBConfig: required")
+	}
+	type Plain InMemoryDBConfig
+	var plain Plain
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	*j = InMemoryDBConfig(plain)
+	return nil
+}
+
+// Kafka Configuration
+type KafkaConfig struct {
+	// Defines the brokers the app should connect to for Kafka services.
+	Brokers []BrokerConfig `json:"brokers" yaml:"brokers" mapstructure:"brokers"`
+
+	// Defines a list of the topic configurations available to the application.
+	Topics []TopicConfig `json:"topics" yaml:"topics" mapstructure:"topics"`
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *KafkaConfig) UnmarshalJSON(value []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if _, ok := raw["brokers"]; raw != nil && !ok {
+		return fmt.Errorf("field brokers in KafkaConfig: required")
+	}
+	if _, ok := raw["topics"]; raw != nil && !ok {
+		return fmt.Errorf("field topics in KafkaConfig: required")
+	}
+	type Plain KafkaConfig
+	var plain Plain
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	*j = KafkaConfig(plain)
+	return nil
+}
+
+// SASL Configuration for Kafka
+type KafkaSASLConfig struct {
+	// Broker SASL password
+	Password *string `json:"password,omitempty,omitzero" yaml:"password,omitempty" mapstructure:"password,omitempty"`
+
+	// Broker SASL mechanism, expect: SCRAM-SHA-512
+	SaslMechanism *string `json:"saslMechanism,omitempty,omitzero" yaml:"saslMechanism,omitempty" mapstructure:"saslMechanism,omitempty"`
+
+	// Broker security protocol, expect one of either: SASL_SSL, SSL. DEPRECATED, use
+	// the top level securityProtocol field instead
+	SecurityProtocol *string `json:"securityProtocol,omitempty,omitzero" yaml:"securityProtocol,omitempty" mapstructure:"securityProtocol,omitempty"`
+
+	// Broker SASL username
+	Username *string `json:"username,omitempty,omitzero" yaml:"username,omitempty" mapstructure:"username,omitempty"`
+}
+
+// Logging Configuration
+type LoggingConfig struct {
+	// Cloudwatch corresponds to the JSON schema field "cloudwatch".
+	Cloudwatch *CloudWatchConfig `json:"cloudwatch,omitempty,omitzero" yaml:"cloudwatch,omitempty" mapstructure:"cloudwatch,omitempty"`
+
+	// Defines the type of logging configuration
+	Type string `json:"type" yaml:"type" mapstructure:"type"`
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *LoggingConfig) UnmarshalJSON(value []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if _, ok := raw["type"]; raw != nil && !ok {
+		return fmt.Errorf("field type in LoggingConfig: required")
+	}
+	type Plain LoggingConfig
+	var plain Plain
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	*j = LoggingConfig(plain)
+	return nil
+}
+
+// Object Storage Bucket
+type ObjectStoreBucket struct {
+	// Defines the access key for specificed bucket.
+	AccessKey *string `json:"accessKey,omitempty,omitzero" yaml:"accessKey,omitempty" mapstructure:"accessKey,omitempty"`
+
+	// Defines the endpoint for the Object Storage server configuration.
+	Endpoint *string `json:"endpoint,omitempty,omitzero" yaml:"endpoint,omitempty" mapstructure:"endpoint,omitempty"`
+
+	// The actual name of the bucket being accessed.
+	Name string `json:"name" yaml:"name" mapstructure:"name"`
+
+	// Defines the region for the specified bucket.
+	Region *string `json:"region,omitempty,omitzero" yaml:"region,omitempty" mapstructure:"region,omitempty"`
+
+	// The name that was requested for the bucket in the ClowdApp.
+	RequestedName string `json:"requestedName" yaml:"requestedName" mapstructure:"requestedName"`
+
+	// Defines the secret key for the specified bucket.
+	SecretKey *string `json:"secretKey,omitempty,omitzero" yaml:"secretKey,omitempty" mapstructure:"secretKey,omitempty"`
+
+	// Details if the Object Server uses TLS.
+	Tls *bool `json:"tls,omitempty,omitzero" yaml:"tls,omitempty" mapstructure:"tls,omitempty"`
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *ObjectStoreBucket) UnmarshalJSON(value []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if _, ok := raw["name"]; raw != nil && !ok {
+		return fmt.Errorf("field name in ObjectStoreBucket: required")
+	}
+	if _, ok := raw["requestedName"]; raw != nil && !ok {
+		return fmt.Errorf("field requestedName in ObjectStoreBucket: required")
+	}
+	type Plain ObjectStoreBucket
+	var plain Plain
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	*j = ObjectStoreBucket(plain)
+	return nil
+}
+
+// Object Storage Configuration
+type ObjectStoreConfig struct {
+	// Defines the access key for the Object Storage server configuration.
+	AccessKey *string `json:"accessKey,omitempty,omitzero" yaml:"accessKey,omitempty" mapstructure:"accessKey,omitempty"`
+
+	// Buckets corresponds to the JSON schema field "buckets".
+	Buckets []ObjectStoreBucket `json:"buckets,omitempty,omitzero" yaml:"buckets,omitempty" mapstructure:"buckets,omitempty"`
+
+	// Defines the hostname for the Object Storage server configuration.
+	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
+
+	// Defines the port for the Object Storage server configuration.
+	Port int `json:"port" yaml:"port" mapstructure:"port"`
+
+	// Defines the secret key for the Object Storage server configuration.
+	SecretKey *string `json:"secretKey,omitempty,omitzero" yaml:"secretKey,omitempty" mapstructure:"secretKey,omitempty"`
+
+	// Details if the Object Server uses TLS.
+	Tls bool `json:"tls" yaml:"tls" mapstructure:"tls"`
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *ObjectStoreConfig) UnmarshalJSON(value []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if _, ok := raw["hostname"]; raw != nil && !ok {
+		return fmt.Errorf("field hostname in ObjectStoreConfig: required")
+	}
+	if _, ok := raw["port"]; raw != nil && !ok {
+		return fmt.Errorf("field port in ObjectStoreConfig: required")
+	}
+	if _, ok := raw["tls"]; raw != nil && !ok {
+		return fmt.Errorf("field tls in ObjectStoreConfig: required")
+	}
+	type Plain ObjectStoreConfig
+	var plain Plain
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	*j = ObjectStoreConfig(plain)
+	return nil
+}
+
+// Dependent service connection info
+type PrivateDependencyEndpoint struct {
+	// The app name of the ClowdApp hosting the service.
+	App string `json:"app" yaml:"app" mapstructure:"app"`
+
+	// The H2C port of the dependent service.
+	H2CPort *int `json:"h2cPort,omitempty,omitzero" yaml:"h2cPort,omitempty" mapstructure:"h2cPort,omitempty"`
+
+	// The H2C TLS port of the dependent service.
+	H2CTLSPort *int `json:"h2cTLSPort,omitempty,omitzero" yaml:"h2cTLSPort,omitempty" mapstructure:"h2cTLSPort,omitempty"`
+
+	// The hostname of the dependent service.
+	Hostname string `json:"hostname" yaml:"hostname" mapstructure:"hostname"`
+
+	// The PodSpec name of the dependent service inside the ClowdApp.
+	Name string `json:"name" yaml:"name" mapstructure:"name"`
+
+	// The port of the dependent service.
+	Port int `json:"port" yaml:"port" mapstructure:"port"`
+
+	// Defines path to CA certificate for TLS connections to this ClowdApp. If
+	// present, this should override use of default TLS CA path.
+	TlsCAPath *string `json:"tlsCAPath,omitempty,omitzero" yaml:"tlsCAPath,omitempty" mapstructure:"tlsCAPath,omitempty"`
+
+	// The TLS port of the dependent service.
+	TlsPort *int `json:"tlsPort,omitempty,omitzero" yaml:"tlsPort,omitempty" mapstructure:"tlsPort,omitempty"`
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (j *PrivateDependencyEndpoint) UnmarshalJSON(value []byte) error {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if _, ok := raw["app"]; raw != nil && !ok {
 		return fmt.Errorf("field app in PrivateDependencyEndpoint: required")
 	}
-	if v, ok := raw["hostname"]; !ok || v == nil {
+	if _, ok := raw["hostname"]; raw != nil && !ok {
 		return fmt.Errorf("field hostname in PrivateDependencyEndpoint: required")
 	}
-	if v, ok := raw["name"]; !ok || v == nil {
+	if _, ok := raw["name"]; raw != nil && !ok {
 		return fmt.Errorf("field name in PrivateDependencyEndpoint: required")
 	}
-	if v, ok := raw["port"]; !ok || v == nil {
+	if _, ok := raw["port"]; raw != nil && !ok {
 		return fmt.Errorf("field port in PrivateDependencyEndpoint: required")
 	}
 	type Plain PrivateDependencyEndpoint
 	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
+	if err := json.Unmarshal(value, &plain); err != nil {
 		return err
 	}
 	*j = PrivateDependencyEndpoint(plain)
@@ -693,85 +779,52 @@ type PrometheusGatewayConfig struct {
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *PrometheusGatewayConfig) UnmarshalJSON(b []byte) error {
+func (j *PrometheusGatewayConfig) UnmarshalJSON(value []byte) error {
 	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
+	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
 	}
-	if v, ok := raw["hostname"]; !ok || v == nil {
+	if _, ok := raw["hostname"]; raw != nil && !ok {
 		return fmt.Errorf("field hostname in PrometheusGatewayConfig: required")
 	}
-	if v, ok := raw["port"]; !ok || v == nil {
+	if _, ok := raw["port"]; raw != nil && !ok {
 		return fmt.Errorf("field port in PrometheusGatewayConfig: required")
 	}
 	type Plain PrometheusGatewayConfig
 	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
+	if err := json.Unmarshal(value, &plain); err != nil {
 		return err
 	}
 	*j = PrometheusGatewayConfig(plain)
 	return nil
 }
 
-// UnmarshalJSON implements json.Unmarshaler.
-func (j *DatabaseConfig) UnmarshalJSON(b []byte) error {
-	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	if v, ok := raw["adminPassword"]; !ok || v == nil {
-		return fmt.Errorf("field adminPassword in DatabaseConfig: required")
-	}
-	if v, ok := raw["adminUsername"]; !ok || v == nil {
-		return fmt.Errorf("field adminUsername in DatabaseConfig: required")
-	}
-	if v, ok := raw["hostname"]; !ok || v == nil {
-		return fmt.Errorf("field hostname in DatabaseConfig: required")
-	}
-	if v, ok := raw["name"]; !ok || v == nil {
-		return fmt.Errorf("field name in DatabaseConfig: required")
-	}
-	if v, ok := raw["password"]; !ok || v == nil {
-		return fmt.Errorf("field password in DatabaseConfig: required")
-	}
-	if v, ok := raw["port"]; !ok || v == nil {
-		return fmt.Errorf("field port in DatabaseConfig: required")
-	}
-	if v, ok := raw["sslMode"]; !ok || v == nil {
-		return fmt.Errorf("field sslMode in DatabaseConfig: required")
-	}
-	if v, ok := raw["username"]; !ok || v == nil {
-		return fmt.Errorf("field username in DatabaseConfig: required")
-	}
-	type Plain DatabaseConfig
-	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
-		return err
-	}
-	*j = DatabaseConfig(plain)
-	return nil
+// Topic Configuration
+type TopicConfig struct {
+	// The name of the actual topic on the Kafka server.
+	Name string `json:"name" yaml:"name" mapstructure:"name"`
+
+	// The name that the app requested in the ClowdApp definition.
+	RequestedName string `json:"requestedName" yaml:"requestedName" mapstructure:"requestedName"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (j *AppConfig) UnmarshalJSON(b []byte) error {
+func (j *TopicConfig) UnmarshalJSON(value []byte) error {
 	var raw map[string]interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
+	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
 	}
-	if v, ok := raw["logging"]; !ok || v == nil {
-		return fmt.Errorf("field logging in AppConfig: required")
+	if _, ok := raw["name"]; raw != nil && !ok {
+		return fmt.Errorf("field name in TopicConfig: required")
 	}
-	if v, ok := raw["metricsPath"]; !ok || v == nil {
-		return fmt.Errorf("field metricsPath in AppConfig: required")
+	if _, ok := raw["requestedName"]; raw != nil && !ok {
+		return fmt.Errorf("field requestedName in TopicConfig: required")
 	}
-	if v, ok := raw["metricsPort"]; !ok || v == nil {
-		return fmt.Errorf("field metricsPort in AppConfig: required")
-	}
-	type Plain AppConfig
+	type Plain TopicConfig
 	var plain Plain
-	if err := json.Unmarshal(b, &plain); err != nil {
+	if err := json.Unmarshal(value, &plain); err != nil {
 		return err
 	}
-	*j = AppConfig(plain)
+	*j = TopicConfig(plain)
 	return nil
 }
