@@ -90,5 +90,36 @@
             "hostname": "endpoint2.svc",
             "port": 10000
         }
-    ]
+    ],
+    "dependencyEndpoints": {
+        "v2": {
+            "app1": {
+                "service1": {
+                    "uri": "http://app1-service1.svc:8080",
+                    "authenticated": false
+                },
+                "service2": {
+                    "uri": "https://app1-service2.example.com:8443",
+                    "authenticated": true,
+                    "ca_certificate": "/cdapp/certs/app1-service2-ca.crt"
+                }
+            },
+            "app2": {
+                "service1": {
+                    "uri": "http://app2-service1.svc:9000",
+                    "authenticated": false
+                }
+            }
+        }
+    },
+    "privateDependencyEndpoints": {
+        "v2": {
+            "app1": {
+                "privateService1": {
+                    "uri": "http://app1-private.svc:10000",
+                    "authenticated": false
+                }
+            }
+        }
+    }
 }

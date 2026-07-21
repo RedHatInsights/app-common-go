@@ -43,12 +43,16 @@ The library provides several helper functions and global variables for accessing
 - `clowder.KafkaTopics` - Map of Kafka topics keyed by requested name
 - `clowder.KafkaServers` - List of Kafka broker URLs
 - `clowder.ObjectBuckets` - Map of object storage buckets keyed by requested name
-- `clowder.DependencyEndpoints` - Nested map `[appName][deploymentName]` for public service endpoints
-- `clowder.PrivateDependencyEndpoints` - Nested map `[appName][deploymentName]` for private service endpoints
+- `clowder.DependencyEndpoints` - Nested map `[appName][deploymentName]` for V1 public service endpoints
+- `clowder.PrivateDependencyEndpoints` - Nested map `[appName][deploymentName]` for V1 private service endpoints
+- `clowder.DependencyEndpointsV2` - Nested map `[appName][serviceName]` for V2 public service endpoints (URI-based)
+- `clowder.PrivateDependencyEndpointsV2` - Nested map `[appName][serviceName]` for V2 private service endpoints (URI-based)
 
 ### Helper Methods
 
 - `clowder.IsClowderEnabled()` - Returns true if the `ACG_CONFIG` environment variable is set
+- `clowder.GetV2DependencyEndpoint(app, name)` - Retrieves a V2 public endpoint by app and service name; returns `(endpoint, bool)`
+- `clowder.GetV2PrivateDependencyEndpoint(app, name)` - Retrieves a V2 private endpoint by app and service name; returns `(endpoint, bool)`
 - `clowder.LoadedConfig.RdsCa()` - Creates a temporary file with the RDS CA certificate and returns the filename
 - `clowder.LoadedConfig.KafkaCa(<BrokerConfig>)` - Creates a temporary file with the Kafka CA certificate and returns the filename (if broker not given, first is chosen)
 - `clowder.LoadedConfig.KafkaFirstCa()` - Convenience method: creates a temporary file with the Kafka CA certificate from the first broker, with nil-safety checks
@@ -67,6 +71,41 @@ if clowder.IsClowderEnabled() {
     fmt.Printf("Kafka brokers: %v\n", brokers)
 }
 ```
+
+### Example: Accessing V2 Dependency Endpoints
+
+V2 endpoints provide a simplified URI-based connection model with explicit authentication and certificate handling:
+
+```go
+if clowder.IsClowderEnabled() {
+    // Use the getter function for safe lookups
+    if endpoint, ok := clowder.GetV2DependencyEndpoint("rbac-service", "api"); ok {
+        fmt.Printf("Service URI: %s\n", endpoint.Uri)
+        fmt.Printf("Requires authentication: %v\n", endpoint.Authenticated)
+        
+        // If TLS is in use, CA certificate path is provided
+        if endpoint.CaCertificate != nil {
+            fmt.Printf("CA certificate: %s\n", *endpoint.CaCertificate)
+        }
+    }
+    
+    // Or directly access the nested map (less safe if app/service might not exist)
+    if appEndpoints, ok := clowder.DependencyEndpointsV2["rbac-service"]; ok {
+        if endpoint, ok := appEndpoints["api"]; ok {
+            fmt.Printf("Found endpoint: %s\n", endpoint.Uri)
+        }
+    }
+}
+```
+
+**V2 Endpoint Fields:**
+
+- `Uri` - Complete URI including protocol, hostname, and port (e.g., `http://service.svc:8000` or `https://service:8443`)
+- `Authenticated` - Boolean flag indicating if the endpoint requires authentication
+  - By default, `true` for cross-cluster dependencies (ClowdAppRef routed through gateways)
+  - By default, `false` for in-cluster dependencies (ClowdApp with network isolation)
+  - This default can be overridden per-deployment via `webServices.public.authenticated` or `webServices.private.authenticated` on the ClowdApp or ClowdAppRef resource
+- `CaCertificate` - Optional path to CA certificate file (only present for HTTPS URIs)
 
 ## Development
 
@@ -87,6 +126,35 @@ ACG_CONFIG="testdata/test.json" go test -v ./...
 ### Contributing
 
 Contributions are welcome. Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on commit messages, signing commits, and opening pull requests.
+
+## Release Notes
+
+### V2 Dependency Endpoints (ENGPROD-10121)
+
+**Added:** Support for Clowder V2 dependency endpoints with simplified URI-based configuration.
+
+**What's New:**
+
+- New globals: `DependencyEndpointsV2` and `PrivateDependencyEndpointsV2` expose V2 endpoints in indexed nested maps `[appName][serviceName]`
+- New getter functions: `GetV2DependencyEndpoint()` and `GetV2PrivateDependencyEndpoint()` provide safe lookups with bounds-checking
+- New field on V2 endpoints: `Authenticated` boolean flag indicates whether authentication is required
+  - By default, `true` for cross-cluster dependencies (ClowdAppRef with gateway routing)
+  - By default, `false` for in-cluster dependencies (ClowdApp with network isolation)
+  - This default can be overridden per-deployment via `webServices.public.authenticated` or `webServices.private.authenticated` on the ClowdApp or ClowdAppRef resource
+- Per-endpoint CA certificates: `CaCertificate` field provides the path to TLS CA for HTTPS endpoints (null for HTTP)
+
+**Backward Compatibility:**
+
+- Existing V1 API unchanged: `DependencyEndpoints`, `PrivateDependencyEndpoints`, and all existing helper methods remain fully supported
+- V2 and V1 endpoints can coexist in the same configuration; applications can use either API depending on Clowder version
+- If Clowder deployment does not emit V2 endpoints, the V2 globals remain `nil` and getters safely return `(zero, false)` instead of panicking
+
+**Migration Path:**
+
+Applications should prefer the V2 API for new code:
+- Simpler connection logic: single URI per endpoint, no protocol/port selection needed
+- Explicit authentication semantics: clear signal of whether cross-cluster auth is required
+- Per-endpoint CA handling: eliminates shared CA path ambiguity
 
 ## License
 

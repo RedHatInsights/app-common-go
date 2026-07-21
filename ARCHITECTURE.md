@@ -74,10 +74,10 @@ The package is split into two source files with distinct responsibilities.
 | `LoggingConfig` | `logging` | `type` | Required at the root level; `cloudwatch` sub-object is optional |
 | `CloudWatchConfig` | `logging.cloudwatch` | `accessKeyId`, `secretAccessKey`, `region`, `logGroup` | Only present when logging type is `"cloudwatch"` |
 | `DependencyEndpoint` | `endpoints[]` | `name`, `hostname`, `port`, `app`, `apiPath` | Public inter-service endpoint; `apiPath` is deprecated in favour of `apiPaths[]` |
-| `DependencyEndpointV2` | `endpoints[]` (V2 format) | `uri` | New V2 endpoint format (added Oct 2025) |
-| `AppConfigDependencyEndpoints` | — | none | Wrapper struct for V2 public endpoint map format |
+| `DependencyEndpointV2` | `dependencyEndpoints.v2[app][service]` | `uri`, `authenticated` | New V2 endpoint format: `uri` (complete URI), `authenticated` (boolean), optional `ca_certificate` (path) |
+| `AppConfigDependencyEndpoints` | `dependencyEndpoints` | `v2` (optional) | Wrapper struct for V2 public endpoint map format |
 | `PrivateDependencyEndpoint` | `privateEndpoints[]` | `name`, `hostname`, `port`, `app` | Same as above but for private (H2C/internal) endpoints; no `apiPath` |
-| `AppConfigPrivateDependencyEndpoints` | — | none | Wrapper struct for V2 private endpoint map format |
+| `AppConfigPrivateDependencyEndpoints` | `privateDependencyEndpoints` | `v2` (optional) | Wrapper struct for V2 private endpoint map format |
 | `PrometheusGatewayConfig` | `prometheusGateway` | `hostname`, `port` | Pushgateway endpoint for metric forwarding |
 | `AppMetadata` | `metadata` | none | Optional operator-injected metadata (app name, env name, deployment images) |
 | `DeploymentMetadata` | `metadata.deployments[]` | `name`, `image` | Per-deployment image reference |
@@ -139,8 +139,10 @@ These globals are populated once, inside the `init()` function, immediately afte
 | Global | Key structure | Value |
 |---|---|---|
 | `KafkaTopics` | `requestedName` | `TopicConfig` |
-| `DependencyEndpoints` | `[appName][deploymentName]` | `DependencyEndpoint` |
-| `PrivateDependencyEndpoints` | `[appName][deploymentName]` | `PrivateDependencyEndpoint` |
+| `DependencyEndpoints` | `[appName][deploymentName]` | `DependencyEndpoint` (V1) |
+| `PrivateDependencyEndpoints` | `[appName][deploymentName]` | `PrivateDependencyEndpoint` (V1) |
+| `DependencyEndpointsV2` | `[appName][serviceName]` | `DependencyEndpointV2` (V2) |
+| `PrivateDependencyEndpointsV2` | `[appName][serviceName]` | `DependencyEndpointV2` (V2) |
 | `ObjectBuckets` | `requestedName` | `ObjectStoreBucket` |
 | `KafkaServers` | — (slice) | `"hostname:port"` strings |
 
@@ -152,6 +154,8 @@ These globals are populated once, inside the `init()` function, immediately afte
 |---|---|---|
 | `IsClowderEnabled` | `() bool` | Returns `true` when `ACG_CONFIG` env var is set |
 | `LoadConfig` | `(filename string) (*AppConfig, error)` | Reads and unmarshals a Clowder JSON file; returns error on I/O or schema violations |
+| `GetV2DependencyEndpoint` | `(app, name string) (DependencyEndpointV2, bool)` | Safe lookup for V2 public endpoint; returns `(endpoint, true)` if found, `(zero, false)` otherwise |
+| `GetV2PrivateDependencyEndpoint` | `(app, name string) (DependencyEndpointV2, bool)` | Safe lookup for V2 private endpoint; returns `(endpoint, true)` if found, `(zero, false)` otherwise |
 
 #### Methods on `AppConfig`
 
@@ -176,11 +180,17 @@ Package imported
             │     └── os.ReadFile → json.Unmarshal → *AppConfig
             ├── LoadedConfig = result
             ├── Build KafkaTopics   (index: requestedName → TopicConfig)
-            ├── Build DependencyEndpoints   (index: app → name → endpoint)
-            ├── Build PrivateDependencyEndpoints (index: app → name → endpoint)
+            ├── Build DependencyEndpoints   (index: app → name → endpoint)    [V1]
+            ├── Build PrivateDependencyEndpoints (index: app → name → endpoint) [V1]
+            ├── Build DependencyEndpointsV2   (index: app → service → endpoint) [V2]
+            ├── Build PrivateDependencyEndpointsV2 (index: app → service → endpoint) [V2]
             ├── Build ObjectBuckets (index: requestedName → bucket)
             └── Build KafkaServers  (slice: "host:port" per broker)
 ```
+
+**V2 Endpoint Parsing:**
+
+V2 endpoints are parsed from `dependencyEndpoints.v2` and `privateDependencyEndpoints.v2` map structures. Each entry is validated and unmarshalled into `DependencyEndpointV2`, which enforces required fields (`uri`, `authenticated`) at the time of unmarshalling. If any V2 endpoint fails validation, the entire V2 map for that category (public or private) is left `nil` and an error is printed to stdout (matching top-level `LoadConfig` error handling).
 
 Errors from `LoadConfig` are printed to stdout (`fmt.Println`) and the function returns without panicking. All globals remain at their zero values (`nil`). **There is no retry, no fatal exit, and no error surfacing to the caller** — callers that access `LoadedConfig` without first checking `IsClowderEnabled()` will encounter a nil pointer dereference.
 

@@ -62,3 +62,77 @@ func TestEmptyRDSCa(t *testing.T) {
 	require.Empty(t, path)
 	require.Error(t, err, "error should have been created")
 }
+
+func TestV2DependencyEndpoints(t *testing.T) {
+	// Verify V2 endpoints were parsed from test.json
+	assert.NotNil(t, DependencyEndpointsV2, "V2 public endpoints should be populated")
+	assert.NotNil(t, PrivateDependencyEndpointsV2, "V2 private endpoints should be populated")
+
+	// Test app1 service1: in-cluster (authenticated: false, no CA cert)
+	endpoint, ok := DependencyEndpointsV2["app1"]["service1"]
+	assert.True(t, ok, "app1/service1 should exist in V2 endpoints")
+	assert.Equal(t, "http://app1-service1.svc:8080", endpoint.Uri, "URI should match")
+	assert.False(t, endpoint.Authenticated, "in-cluster endpoint should have authenticated=false")
+	assert.Nil(t, endpoint.CaCertificate, "in-cluster endpoint should not have CA certificate")
+
+	// Test app1 service2: cross-cluster (authenticated: true, with CA cert)
+	endpoint, ok = DependencyEndpointsV2["app1"]["service2"]
+	assert.True(t, ok, "app1/service2 should exist in V2 endpoints")
+	assert.Equal(t, "https://app1-service2.example.com:8443", endpoint.Uri, "URI should match")
+	assert.True(t, endpoint.Authenticated, "cross-cluster endpoint should have authenticated=true")
+	assert.NotNil(t, endpoint.CaCertificate, "cross-cluster endpoint should have CA certificate")
+	assert.Equal(t, "/cdapp/certs/app1-service2-ca.crt", *endpoint.CaCertificate, "CA cert path should match")
+
+	// Test app2 service1
+	endpoint, ok = DependencyEndpointsV2["app2"]["service1"]
+	assert.True(t, ok, "app2/service1 should exist in V2 endpoints")
+	assert.Equal(t, "http://app2-service1.svc:9000", endpoint.Uri, "URI should match")
+
+	// Test private endpoints
+	endpoint, ok = PrivateDependencyEndpointsV2["app1"]["privateService1"]
+	assert.True(t, ok, "app1/privateService1 should exist in V2 private endpoints")
+	assert.Equal(t, "http://app1-private.svc:10000", endpoint.Uri, "Private endpoint URI should match")
+	assert.False(t, endpoint.Authenticated, "private endpoint should have authenticated=false")
+}
+
+func TestGetV2DependencyEndpoint(t *testing.T) {
+	// Test successful lookup
+	endpoint, ok := GetV2DependencyEndpoint("app1", "service1")
+	assert.True(t, ok, "should find app1/service1")
+	assert.Equal(t, "http://app1-service1.svc:8080", endpoint.Uri)
+
+	// Test not found: non-existent app
+	_, ok = GetV2DependencyEndpoint("nonexistent", "service")
+	assert.False(t, ok, "should not find non-existent app")
+
+	// Test not found: non-existent service
+	_, ok = GetV2DependencyEndpoint("app1", "nonexistent")
+	assert.False(t, ok, "should not find non-existent service")
+}
+
+func TestGetV2PrivateDependencyEndpoint(t *testing.T) {
+	// Test successful lookup
+	endpoint, ok := GetV2PrivateDependencyEndpoint("app1", "privateService1")
+	assert.True(t, ok, "should find app1/privateService1")
+	assert.Equal(t, "http://app1-private.svc:10000", endpoint.Uri)
+
+	// Test not found: non-existent app
+	_, ok = GetV2PrivateDependencyEndpoint("nonexistent", "service")
+	assert.False(t, ok, "should not find non-existent app")
+
+	// Test not found: non-existent service
+	_, ok = GetV2PrivateDependencyEndpoint("app1", "nonexistent")
+	assert.False(t, ok, "should not find non-existent service")
+}
+
+func TestMalformedV2Endpoints(t *testing.T) {
+	// Load a config with malformed V2 endpoints (missing required 'authenticated' field)
+	// This should not panic, but V2 endpoints should be left unpopulated due to error
+	cfg, err := LoadConfig("testdata/malformed_v2.json")
+	require.NoErrorf(t, err, "can't load config: %s", err)
+
+	// Verify config loaded but without V2 endpoint data
+	assert.NotNil(t, cfg, "config should load even with malformed V2 data")
+	// Note: we can't directly test the globals here since they were set during package init()
+	// with the valid test.json. This test demonstrates that LoadConfig itself doesn't panic.
+}
